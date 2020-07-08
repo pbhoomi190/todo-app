@@ -33,9 +33,13 @@ class TimeSelectDialog extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(20))
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.6,
+        height: MediaQuery.of(context).size.height * 0.45,
         decoration: BoxDecoration(
-         color: Theme.of(context).primaryColorLight,
+            gradient: LinearGradient(
+                colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft
+            ),
           borderRadius: BorderRadius.all(Radius.circular(20))
         ),
         child: Padding(
@@ -52,7 +56,7 @@ class TimeSelectDialog extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(obj.getTranslatedValue("select_time"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+              Center(child: Text(obj.getTranslatedValue("select_time"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,)),
               const SizedBox(height: 10,),
               ListView.builder(itemBuilder: (context, index) {
                 return reminderTimeButton(context, reminderTimes[index]);

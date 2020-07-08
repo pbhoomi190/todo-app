@@ -49,19 +49,21 @@ class DatabaseHelper {
         '$colCategory TEXT, '
         '$colReminder INTEGER,'
         '$colFavourite INTEGER)');
-
     await db.execute('CREATE TABLE $reminderTable('
         '$reminderColId INTEGER PRIMARY KEY AUTOINCREMENT, '
         '$reminderColName TEXT, '
         '$reminderColTime INTEGER, '
         '$reminderColSelected INTEGER)'
-    );
-
-    Reminder.getAllReminder().forEach((element) {
-      addReminder(element);
+    ).then((value) {
+      Reminder.getAllReminder().forEach((element) {
+        addReminder(element);
+      });
     });
   }
 
+  getDatabase() async {
+    Database db = await this.database;
+  }
 
   // Putting the arguments in curly braces makes it optional :
   // String title, String description, String date, String category, {int isReminderOn = 1, int isFavourite = 0}
@@ -98,7 +100,9 @@ class DatabaseHelper {
   // Called on setting screen to show list of reminder times
   Future<List<Map<String, dynamic>>> fetchReminders() async {
     Database db = await this.database;
+    print("Databse==================$db");
     var reminders = await db.query(reminderTable);
+    print("reminder================$reminders");
     return reminders;
   }
 

@@ -19,11 +19,22 @@ class _SettingScreenState extends State<SettingScreen> {
   Reminder selectedTime;
   DatabaseHelper helper = DatabaseHelper();
   List<Reminder> reminderTimes = [];
+  Language selectedLanguage = Language.listOfLanguage().first;
 
   void changeLanguage(Language language) {
     print(language.languageCode);
     Locale temp = Locale(language.languageCode);
     MyApp.setLocale(context, temp);
+    setState(() {
+      selectedLanguage = language;
+    });
+  }
+
+  void getSelectedLanguage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var locale = prefs.getString('locale') ?? "en";
+    print(locale);
+    selectedLanguage = Language.listOfLanguage().firstWhere((element) => element.languageCode == locale);
   }
 
   fetchReminderTimes() async {
@@ -40,6 +51,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void openLanguageSelectionDialog(BuildContext context) {
+    var obj = LocalizationManager.of(context);
     List<Language> array = Language.listOfLanguage();
       showDialog(
           context: context,
@@ -51,21 +63,35 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorLight,
+                  gradient: LinearGradient(
+                    colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft
+                  ),
                     borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: ListView.builder(itemBuilder: (context, index) {
-                    return OutlineButton(
-                      child: Text(array[index].name),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        changeLanguage(array[index]);
-                      },
-                    );
+                    if (index == 0) {
+                      return Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(obj.getTranslatedValue("select_language"), style: Theme.of(context).textTheme.bodyText1,),
+                        ),
+                      );
+                    } else {
+                      return OutlineButton(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                        child: Text(array[index - 1].name, style: Theme.of(context).textTheme.bodyText2),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          changeLanguage(array[index - 1]);
+                        },
+                      );
+                    }
                   },
-                    itemCount: array.length,
+                    itemCount: array.length + 1,
                   )
                 ),
               ),
@@ -99,6 +125,7 @@ class _SettingScreenState extends State<SettingScreen> {
   void initState() {
     fetchReminderTimes();
     getData();
+    getSelectedLanguage();
     super.initState();
   }
 
@@ -245,7 +272,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(obj.getTranslatedValue("select_language"), style: Theme.of(context).textTheme.bodyText1,),
+                      Expanded(child: Text("${obj.getTranslatedValue("select_language")} (${selectedLanguage.name})", style: Theme.of(context).textTheme.bodyText1,)),
                       Icon(Icons.keyboard_arrow_down)
                     ],
                   ),

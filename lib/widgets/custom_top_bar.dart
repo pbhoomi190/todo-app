@@ -18,13 +18,18 @@ class CustomTopBar extends StatelessWidget {
           children: <Widget>[
             Align(
               alignment: Alignment.topLeft,
-              child: Visibility(
-                visible: isLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
-                  onPressed: () {
-                    onPop();
-                  },
+              child: Semantics(
+                label: "Back button, double tap to go back",
+                button: true,
+                enabled: true,
+                child: Visibility(
+                  visible: isLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
+                    onPressed: () {
+                      onPop();
+                    },
+                  ),
                 ),
               ),
             ),

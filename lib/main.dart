@@ -6,6 +6,7 @@ import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/custom_app_theme.dart';
+import 'database/database_helper.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Locale homeLocale;
   ThemeMode themeMode;
+  DatabaseHelper helper = DatabaseHelper();
 
   void setTheme(ThemeMode mode) {
     setState(() {
@@ -66,9 +68,14 @@ class _MyAppState extends State<MyApp> {
     await prefs.setString('locale', homeLocale.languageCode);
   }
 
+  getDatabase() {
+    helper.getDatabase();
+  }
+
   @override
   void initState() {
     getAppData();
+    getDatabase();
     super.initState();
   }
 
