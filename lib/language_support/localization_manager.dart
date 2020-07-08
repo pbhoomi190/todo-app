@@ -34,7 +34,7 @@ class LocalizationManagerDelegate extends LocalizationsDelegate<LocalizationMana
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'hi', 'fr', 'es'].contains(locale.languageCode);
+    return ['en', 'hi', 'fr', 'es', 'ar', 'gu'].contains(locale.languageCode);
   }
 
   @override
