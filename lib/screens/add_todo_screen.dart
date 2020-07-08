@@ -91,9 +91,10 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
        var pickedTime = await timePicker(ctx);
        if (pickedTime != null) {
          var selectedDate = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+         var dateStr = await selectedDate.formattedDateString();
          setState(() {
            dateInt = selectedDate.millisecondsSinceEpoch;
-           var dateStr = selectedDate.formattedDateString();
+           print("DATE STRING======= $dateStr");
            dateController.text = dateStr;
          });
        }

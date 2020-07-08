@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'category.dart';
 import 'constants.dart';
 
@@ -28,8 +29,10 @@ extension dateToInt on DateTime {
     return (ms / 1000).round();
   }
 
-  String formattedDateString() {
-    final intl.DateFormat dateFormat = intl.DateFormat("dd LLL, yyyy hh:mm a");
+  Future<String> formattedDateString() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var locale = prefs.getString('locale') ?? "en";
+    final intl.DateFormat dateFormat = intl.DateFormat("dd LLL, yyyy hh:mm a", locale);
     var dateStr = dateFormat.format(this);
     return dateStr;
   }
@@ -53,9 +56,9 @@ extension dateToInt on DateTime {
 }
 
 extension intToDates on int {
-    String dateString() {
+    Future<String> dateString() async {
       var dateTime = DateTime.fromMillisecondsSinceEpoch(this);
-      var dateStr = dateTime.formattedDateString();
+      var dateStr = await dateTime.formattedDateString();
       return dateStr;
     }
 

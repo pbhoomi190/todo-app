@@ -125,8 +125,8 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
       if (pickedTime != null) {
         var selectedDate = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
         editToDo.date = selectedDate.millisecondsSinceEpoch;
+        var dateStr = await selectedDate.formattedDateString();
         setState(() {
-          var dateStr = selectedDate.formattedDateString();
           dateController.text = dateStr;
         });
       }

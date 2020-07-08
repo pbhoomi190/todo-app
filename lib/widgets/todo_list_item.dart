@@ -19,6 +19,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
   DatabaseHelper helper = DatabaseHelper();
   bool isFav = false;
   ToDo itemToDo;
+  String dateString = "";
 
   manageFavourite() async {
       var result = await helper.markFavouriteToDoItem(itemToDo, isFav ? 1 : 0);
@@ -28,10 +29,18 @@ class _ToDoListItemState extends State<ToDoListItem> {
       });
   }
 
+  getDate() async {
+    var date = await itemToDo.date.dateString();
+    setState(() {
+      dateString = date;
+    });
+  }
+
   @override
   void initState() {
     isFav = widget.toDo.isFavourite == 0 ? false : true;
     itemToDo = widget.toDo;
+    getDate();
     super.initState();
   }
 
@@ -58,7 +67,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
                       const SizedBox(height: 5,),
                       Text(itemToDo.description, maxLines: 1, overflow: TextOverflow.ellipsis,),
                       const SizedBox(height: 5,),
-                      Text(itemToDo.date.dateString(), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      Text(dateString, maxLines: 1, overflow: TextOverflow.ellipsis,),
                       const SizedBox(height: 5,),
                     ],
                   ),
