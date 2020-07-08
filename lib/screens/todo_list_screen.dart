@@ -6,10 +6,10 @@ import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/edit_todo_screen.dart';
-import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/widgets/delete_todo_dialog.dart';
 import 'package:fluttertododemo/widgets/filtered_list_inherited_widget.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_route_transition.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -265,17 +265,27 @@ class HorizontalCategoryScrollView extends StatefulWidget {
 
 class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollView> {
 
-  Widget itemCard(String title, String image) {
+  bool isDark = false;
+
+  getTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDark = prefs.getBool('isDark') ?? false;
+    });
+  }
+
+  Widget itemCard(String title, String image, CategoryType type) {
+
     final selectedCategory = CategoryInheritedWidget.of(context).categoryType;
     return InkWell(
       onTap: () {
-        widget.onCategoryChange(title.categoryType());
+        widget.onCategoryChange(type);
       },
       child: Container(
         width: 150,
         height: 175,
         child: Card(
-          color: selectedCategory == title.categoryType() ? Theme.of(context).primaryColorLight : Colors.white,
+          color: selectedCategory == type ? (isDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight) : (isDark ? Theme.of(context).primaryColorLight : Colors.white) ,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -293,19 +303,25 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
   }
 
   @override
+  void initState() {
+    getTheme();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var obj = LocalizationManager.of(context);
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        itemCard(obj.getTranslatedValue("show_all"), allImage),
-        itemCard(obj.getTranslatedValue("favorites"), favImage),
-        itemCard(obj.getTranslatedValue("shopping"), shoppingImage),
-        itemCard(obj.getTranslatedValue("event"), eventImage),
-        itemCard(obj.getTranslatedValue("trip"), tripImage),
-        itemCard(obj.getTranslatedValue("work"), workImage),
-        itemCard(obj.getTranslatedValue("meeting"), meetingImage),
-        itemCard(obj.getTranslatedValue("other"), otherImage),
+        itemCard(obj.getTranslatedValue("show_all"), allImage, CategoryType.all),
+        itemCard(obj.getTranslatedValue("favorites"), favImage, CategoryType.favorites),
+        itemCard(obj.getTranslatedValue("shopping"), shoppingImage, CategoryType.shopping),
+        itemCard(obj.getTranslatedValue("event"), eventImage, CategoryType.event),
+        itemCard(obj.getTranslatedValue("trip"), tripImage, CategoryType.trip),
+        itemCard(obj.getTranslatedValue("work"), workImage, CategoryType.work),
+        itemCard(obj.getTranslatedValue("meeting"), meetingImage, CategoryType.meeting),
+        itemCard(obj.getTranslatedValue("other"), otherImage, CategoryType.other),
       ],
     );
   }
