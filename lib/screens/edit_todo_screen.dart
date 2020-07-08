@@ -88,7 +88,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     title = titleController.text;
     desc = descController.text;
     cat = categoryController.text;
-    date = dateController.text;
+    date = dateController != null ? dateController.text : "";
     validate();
     titleController.addListener(() {
       print("title: ${titleController.value}");
@@ -199,14 +199,25 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   }
 
   // Life cycle method
+
+  void getDate() async {
+    date = await widget.toDo.date.dateString();
+    setState(() {
+        dateController.text = date;
+    });
+  }
+
   @override
   void initState() {
     editToDo = widget.toDo;
     selectedCategory = widget.toDo.category.categoryType();
     isFromComplete = widget.isFromCompleted == null ? false : widget.isFromCompleted;
+    if (isFromComplete == false) {
+      getDate();
+    }
     titleController = TextEditingController(text: widget.toDo.title);
     descController = TextEditingController(text: widget.toDo.description);
-    dateController = TextEditingController(text: isFromComplete ? "" : widget.toDo.date.dateString());
+    dateController = TextEditingController(text: "");
     categoryController = TextEditingController(text: widget.toDo.category);
     isReminder = widget.toDo.isReminderOn == 0 ? false : true;
     addListenersToTextField();
