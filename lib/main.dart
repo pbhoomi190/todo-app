@@ -94,6 +94,8 @@ class _MyAppState extends State<MyApp> {
         const Locale.fromSubtags(languageCode: 'hi'),
         const Locale.fromSubtags(languageCode: 'fr'),
         const Locale.fromSubtags(languageCode: 'es'),
+        const Locale.fromSubtags(languageCode: 'gu'),
+        const Locale.fromSubtags(languageCode: 'ar'),
       ],
       themeMode: themeMode,
       darkTheme: ThemeData.dark(),
