@@ -278,25 +278,31 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
   Widget itemCard(String title, String image, CategoryType type) {
 
     final selectedCategory = CategoryInheritedWidget.of(context).categoryType;
-    return InkWell(
-      onTap: () {
-        widget.onCategoryChange(type);
-      },
-      child: Container(
-        width: 150,
-        height: 175,
-        child: Card(
-          color: selectedCategory == type ? (isDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight) : (isDark ? Theme.of(context).primaryColorLight : Colors.white) ,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage(image),
-              ),
-              const SizedBox(height: 10,),
-              Text(title, overflow: TextOverflow.ellipsis, maxLines: 2,)
-            ],
+    return Semantics(
+      label: "$title, Double tap to show $title list",
+      selected: selectedCategory == type ? true : false,
+      container: true,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: () {
+          widget.onCategoryChange(type);
+        },
+        child: Container(
+          width: 150,
+          height: 175,
+          child: Card(
+            color: selectedCategory == type ? (isDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight) : (isDark ? Theme.of(context).primaryColorLight : Colors.white) ,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: AssetImage(image),
+                ),
+                const SizedBox(height: 10,),
+                Text(title, overflow: TextOverflow.ellipsis, maxLines: 2,)
+              ],
+            ),
           ),
         ),
       ),
