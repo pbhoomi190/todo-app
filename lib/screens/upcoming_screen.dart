@@ -6,7 +6,6 @@ import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
-import 'package:fluttertododemo/widgets/delete_todo_dialog.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 
 import '../custom_route_transition.dart';
@@ -51,18 +50,29 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     });
   }
 
-  showAlert(BuildContext context, ToDo toDo, UpcomingType type) {
+  showAlertDialogue(BuildContext context, ToDo toDo, UpcomingType type) {
+    var obj = LocalizationManager.of(context);
     showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return DeleteToDoDialog(noClicked: () {
-            Navigator.of(context).pop();
-          }, yesClicked: () {
-            deleteToDo(type, toDo).then((value) {
-              Navigator.of(context).pop();
-            });
-          },);
-        });
+        child: AlertDialog(
+          title: Text(obj.getTranslatedValue("delete_slide_button")),
+          content: Text(obj.getTranslatedValue("delete_confirm_msg")),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(obj.getTranslatedValue("no_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text(obj.getTranslatedValue("yes_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: (){
+                deleteToDo(type, toDo).then((value) {
+                  Navigator.of(context).pop();
+                });
+              }
+            ),
+          ],
+        )
+    );
   }
 
   Widget appTitle() {
@@ -131,7 +141,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 icon: Icons.delete,
                 onTap: () {
                   print("Delete");
-                  showAlert(context, thisWeek[index], UpcomingType.thisWeek);
+                  showAlertDialogue(context, thisWeek[index], UpcomingType.thisWeek);
                 },
               ),
             ],
@@ -174,7 +184,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               icon: Icons.delete,
               onTap: () {
                 print("Delete");
-                showAlert(context, thisMonth[index], UpcomingType.thisMonth);
+                showAlertDialogue(context, thisMonth[index], UpcomingType.thisMonth);
               },
             ),
           ],
@@ -218,7 +228,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               icon: Icons.delete,
               onTap: () {
                 print("Delete");
-                showAlert(context, laterAfterThisMonth[index], UpcomingType.afterThisMonth);
+                showAlertDialogue(context, laterAfterThisMonth[index], UpcomingType.afterThisMonth);
               },
             ),
           ],

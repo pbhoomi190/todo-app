@@ -6,7 +6,6 @@ import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
-import 'package:fluttertododemo/widgets/delete_todo_dialog.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 
 import '../custom_route_transition.dart';
@@ -73,16 +72,25 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     });
   }
 
-  showAlert(BuildContext context, ToDo toDo) {
+  showAlertDialogue(BuildContext context, ToDo toDo) {
+    var obj = LocalizationManager.of(context);
     showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return DeleteToDoDialog(noClicked: () {
-            Navigator.of(context).pop();
-          }, yesClicked: () {
-            performDelete(toDo);
-          },);
-        });
+        child: AlertDialog(
+          title: Text(obj.getTranslatedValue("delete_slide_button")),
+          content: Text(obj.getTranslatedValue("delete_confirm_msg")),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(obj.getTranslatedValue("no_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text(obj.getTranslatedValue("yes_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => performDelete(toDo),
+            ),
+          ],
+        )
+    );
   }
 
   @override
@@ -133,7 +141,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 icon: Icons.delete,
                 onTap: () {
                   print("Delete");
-                  showAlert(context, favorites[index]);
+                  showAlertDialogue(context, favorites[index]);
                 },
               ),
             ],

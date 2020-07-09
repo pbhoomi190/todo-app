@@ -52,6 +52,46 @@ class _CompletedScreenState extends State<CompletedScreen> {
     });
   }
 
+  Future deleteItem(ToDo toDo) async {
+    var result = await helper.deleteToDoItem(toDo);
+    if (result == 1) {
+      setState(() {
+        completed.removeWhere((element) {
+          return element == toDo;
+        });
+      });
+    } else {
+      print("Unable to delete the item.");
+    }
+  }
+
+  performDelete(ToDo toDo) async {
+    deleteItem(toDo).then((value) {
+      Navigator.of(context).pop();
+    });
+  }
+
+  showAlertDialogue(BuildContext context, ToDo toDo) {
+    var obj = LocalizationManager.of(context);
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text(obj.getTranslatedValue("delete_slide_button")),
+          content: Text(obj.getTranslatedValue("delete_confirm_msg")),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(obj.getTranslatedValue("no_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text(obj.getTranslatedValue("yes_text"), style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => performDelete(toDo),
+            ),
+          ],
+        )
+    );
+  }
+
   @override
   void initState() {
     getCompleted();
@@ -94,6 +134,15 @@ class _CompletedScreenState extends State<CompletedScreen> {
             Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: completed[index], isFromCompleted: true,), type: PageTransitionType.slideLeft));
           },
           ),
+            IconSlideAction(
+              caption: obj.getTranslatedValue("delete_slide_button"),
+              color: Colors.red,
+              icon: Icons.delete,
+              onTap: () {
+                print("Delete");
+                showAlertDialogue(context, completed[index]);
+              },
+            ),
             ],
             child: ToDoListItem(toDo: completed[index], key: UniqueKey(), onFavClick: () {},)
         );
