@@ -70,12 +70,13 @@ class DatabaseHelper {
   // String title, String description, String date, String category, {int isReminderOn = 1, int isFavourite = 0}
 
   // Add new reminder
-  Future<int> addReminder(Reminder reminder) async {
+   addReminder(Reminder reminder) async {
     debugPrint("Reminder to add:- ${reminder.toMap()}");
     Database db = await this.database;
-    var result = await db.insert(reminderTable, reminder.toMap());
-    print("Created reminder item response integer: === $result");
-    return result;
+    await db.transaction((txn) async {
+      var resultId = txn.insert(reminderTable, reminder.toMap());
+      print("Result id=======> $resultId");
+    });
   }
 
   // Get time of reminder set by user default is 1 hour
