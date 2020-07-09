@@ -270,8 +270,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: thisMonthToDo.length > 0 || laterAfterThisMonth.length > 0 ? Column(
+        child: thisMonthToDo.length > 0 || laterAfterThisMonth.length > 0 ? SingleChildScrollView(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
@@ -316,12 +316,12 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               const SizedBox(height: 16,),
               laterAfterThisMonthSection(),
             ],
-          ) : Center(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Text(obj.getTranslatedValue("no_upcoming_msg"),
-                style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,
-              ),
+          ),
+        ) : Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Text(obj.getTranslatedValue("no_upcoming_msg"),
+              style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,
             ),
           ),
         ),
