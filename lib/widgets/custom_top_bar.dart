@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/language_support/localization_manager.dart';
 
 class CustomTopBar extends StatelessWidget {
   @required final String title;
@@ -12,24 +13,21 @@ class CustomTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var obj = LocalizationManager.of(context);
     return Container(
       child: SafeArea(
         child: Stack(
           children: <Widget>[
             Align(
               alignment: Alignment.topLeft,
-              child: Semantics(
-                label: "Back button, double tap to go back",
-                button: true,
-                enabled: true,
-                child: Visibility(
-                  visible: isLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
-                    onPressed: () {
-                      onPop();
-                    },
-                  ),
+              child: Visibility(
+                visible: isLeft,
+                child: IconButton(
+                  tooltip: obj.getTranslatedValue("back_btn_talkback"),
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
+                  onPressed: () {
+                    onPop();
+                  },
                 ),
               ),
             ),
@@ -50,6 +48,7 @@ class CustomTopBar extends StatelessWidget {
                 visible: isRight,
                 child: Container(
                   child: IconButton(
+                    tooltip: obj.getTranslatedValue("setting_btn_talkback"),
                     icon: Icon(Icons.settings),
                     onPressed: () {
                       onSetting();

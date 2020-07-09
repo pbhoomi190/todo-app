@@ -57,5 +57,8 @@
   "yes_text" : "OUI",
   "no_text" : "NON",
   "select_time" : "Sélectionnez l'heure",
-  "select_language" : "Choisir la langue"
+  "select_language" : "Choisir la langue",
+  "setting_btn_talkback" : "Go to settings screen",
+  "add_todo_talkback" : "Go to add to-do screen",
+  "back_btn_talkback" : "Revenir à l'écran arrière"
 }

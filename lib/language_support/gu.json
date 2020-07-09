@@ -57,5 +57,8 @@
   "yes_text" : "હા",
   "no_text" : "ના",
   "select_time" : "સમય પસંદ કરો",
-  "select_language" : "ભાષા પસંદ કરો"
+  "select_language" : "ભાષા પસંદ કરો",
+  "setting_btn_talkback" : "સેટિંગ્સ સ્ક્રીન પર જાઓ",
+  "add_todo_talkback" : "ટૂ-ડૂ ઉમેરવા જાઓ",
+  "back_btn_talkback" : "પાછળની સ્ક્રીન પર જાઓ"
 }

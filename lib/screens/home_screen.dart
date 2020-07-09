@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
-import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/add_todo_screen.dart';
 import 'package:fluttertododemo/screens/completed_screen.dart';
@@ -27,27 +26,25 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         onPressed();
       },
-      child: Semantics(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.1,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-            boxShadow: [BoxShadow(color: Colors.black, blurRadius: 1, spreadRadius: 1.5),]
-          ),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.1,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+          boxShadow: [BoxShadow(color: Colors.black, blurRadius: 1, spreadRadius: 1.5),]
+        ),
 
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                    child: Text(title, style: Theme.of(context).textTheme.bodyText1,)
-                ),
-                icon,
-              ],
-            ),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                  child: Text(title, style: Theme.of(context).textTheme.bodyText1,)
+              ),
+              icon,
+            ],
           ),
         ),
       ),
@@ -96,9 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        tooltip: obj.getTranslatedValue("add_todo_talkback"),
         child: Icon(Icons.add),
         onPressed: () {
-          print('Add item screen');
           Navigator.of(context).push(CustomRoute(page: AddToDoScreen(), type: PageTransitionType.rippleRightUp));
         },
       ),

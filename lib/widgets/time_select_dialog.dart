@@ -58,11 +58,13 @@ class TimeSelectDialog extends StatelessWidget {
               ),
               Center(child: Text(obj.getTranslatedValue("select_time"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,)),
               const SizedBox(height: 10,),
-              ListView.builder(itemBuilder: (context, index) {
-                return reminderTimeButton(context, reminderTimes[index]);
-              },
-                itemCount: reminderTimes.length,
-                shrinkWrap: true,
+              Expanded(
+                child: ListView.builder(itemBuilder: (context, index) {
+                  return reminderTimeButton(context, reminderTimes[index]);
+                },
+                  itemCount: reminderTimes.length,
+                  shrinkWrap: true,
+                ),
               )
             ],
           ),

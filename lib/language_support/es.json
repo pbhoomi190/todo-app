@@ -57,5 +57,8 @@
   "yes_text" : "SI",
   "no_text" : "NO",
   "select_time" : "Seleccione hora",
-  "select_language" : "Seleccione el idioma"
+  "select_language" : "Seleccione el idioma",
+  "setting_btn_talkback" : "Ir a la pantalla de configuración",
+  "add_todo_talkback" : "Ir a agregar pantalla de tareas",
+  "back_btn_talkback" : "Ir a la pantalla posterior"
 }
