@@ -29,6 +29,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   String date = "";
   bool isValid = false;
   int dateInt;
+  bool isReminder = true;
   DatabaseHelper helper = DatabaseHelper();
 
   void showSnackBar(String message) {
@@ -169,7 +170,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void addToDoItem() async {
     var obj = LocalizationManager.of(context);
-    ToDo toDo = ToDo(title: title, description: desc, date: dateInt, category: selectedCategory.getString());
+    ToDo toDo = ToDo(title: title, description: desc, date: dateInt, category: selectedCategory.getString(), isReminderOn: isReminder ? 1 : 0);
     var result = await helper.createToDoListItem(toDo);
     if (result == 0) {
       showSnackBar(obj.getTranslatedValue("create_error_msg"));
@@ -274,6 +275,21 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         borderSide: BorderSide(width: 2),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
+                      Switch(
+                        value: isReminder,
+                        onChanged: (value) {
+                          setState(() {
+                            isReminder = value;
+                          });
+                        },
+                      )
+                    ],
                   ),
                   const SizedBox(height: 30),
                   LimitedBox(

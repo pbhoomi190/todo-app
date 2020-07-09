@@ -57,10 +57,10 @@ class ToDo {
   @required String description;
   @required int date;
   @required String category;
-  int isReminderOn = 1;
+  @required int isReminderOn = 1;
   int isFavourite = 0;
 
-  ToDo({this.title, this.description, this.date, this.category});
+  ToDo({this.title, this.description, this.date, this.category, this.isReminderOn});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

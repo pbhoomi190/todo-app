@@ -130,8 +130,10 @@ class DatabaseHelper {
     Database db = await this.database;
     var result = await db.insert(tableName, toDo.toMap());
     print("Created todo item response integer: === $result");
+    if (toDo.isReminderOn == 1) {
       int time = await getReminderTime();
       manager.setReminder(toDo, result, time);
+    }
     return result;
   }
 
