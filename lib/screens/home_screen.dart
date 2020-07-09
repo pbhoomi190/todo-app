@@ -20,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-
   Widget toDoItemButton(String title, Icon icon, Color bgColor, VoidCallback onPressed) {
     return InkWell(
       onTap: () {

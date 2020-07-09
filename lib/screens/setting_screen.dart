@@ -241,15 +241,18 @@ class _SettingScreenState extends State<SettingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(obj.getTranslatedValue("dark_theme"), style: Theme.of(context).textTheme.bodyText1,),
-                    Switch(
-                      activeColor: Theme.of(context).primaryColor,
-                      value: isDarkTheme,
-                      onChanged: (isOn) {
-                        setState(() {
-                          isDarkTheme = isOn;
-                          MyApp.setTheme(context, isDarkTheme ? ThemeMode.dark : ThemeMode.light);
-                        });
-                      },
+                    Tooltip(
+                      message: "Turn on or off the dark theme",
+                      child: Switch(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: isDarkTheme,
+                        onChanged: (isOn) {
+                          setState(() {
+                            isDarkTheme = isOn;
+                            MyApp.setTheme(context, isDarkTheme ? ThemeMode.dark : ThemeMode.light);
+                          });
+                        },
+                      ),
                     )
                   ],
                 ),

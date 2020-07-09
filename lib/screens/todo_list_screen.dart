@@ -174,6 +174,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
             ),
           ),
           leading: IconButton(
+            tooltip: obj.getTranslatedValue("back_btn_talkback"),
             icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
             onPressed: () {
               Navigator.of(context).pop();
