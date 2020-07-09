@@ -248,8 +248,8 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                               ),
                               IconSlideAction(
                                 caption: obj.getTranslatedValue("complete_slide_button"),
-                                color: Theme.of(context).primaryColorLight,
-                                icon: Icons.edit,
+                                color: Theme.of(context).primaryColor,
+                                icon: Icons.replay,
                                 onTap: () {
                                   markComplete(filteredToDo[index]);
                                 },

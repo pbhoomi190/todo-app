@@ -145,8 +145,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               ),
               IconSlideAction(
                 caption: obj.getTranslatedValue("complete_slide_button"),
-                color: Theme.of(context).primaryColorLight,
-                icon: Icons.edit,
+                color: Theme.of(context).primaryColor,
+                icon: Icons.replay,
                 onTap: () {
                   markComplete(favorites[index]);
                 },

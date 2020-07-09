@@ -161,8 +161,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               ),
               IconSlideAction(
                 caption: obj.getTranslatedValue("complete_slide_button"),
-                color: Theme.of(context).primaryColorLight,
-                icon: Icons.edit,
+                color: Theme.of(context).primaryColor,
+                icon: Icons.replay,
                 onTap: () {
                   markComplete(thisWeek[index], UpcomingType.thisWeek);
                 },
@@ -212,8 +212,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
             ),
             IconSlideAction(
               caption: obj.getTranslatedValue("complete_slide_button"),
-              color: Theme.of(context).primaryColorLight,
-              icon: Icons.edit,
+              color: Theme.of(context).primaryColor,
+              icon: Icons.replay,
               onTap: () {
                 markComplete(thisMonth[index], UpcomingType.thisMonth);
               },
@@ -264,8 +264,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
             ),
             IconSlideAction(
               caption: obj.getTranslatedValue("complete_slide_button"),
-              color: Theme.of(context).primaryColorLight,
-              icon: Icons.edit,
+              color: Theme.of(context).primaryColor,
+              icon: Icons.replay,
               onTap: () {
                 markComplete(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
               },

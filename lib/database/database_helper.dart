@@ -47,8 +47,9 @@ class DatabaseHelper {
         '$colDescription TEXT, '
         '$colDate INTEGER, '
         '$colCategory TEXT, '
-        '$colReminder INTEGER,'
-        '$colFavourite INTEGER)');
+        '$colReminder INTEGER, '
+        '$colFavourite INTEGER, '
+        '$colCompleted INTEGER)');
     await db.execute('CREATE TABLE $reminderTable('
         '$reminderColId INTEGER PRIMARY KEY AUTOINCREMENT, '
         '$reminderColName TEXT, '
@@ -141,7 +142,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> fetchToDoList() async {
     Database db = await this.database;
     int today = DateTime.now().millisecondsSinceEpoch;
-    var result = await db.query(tableName, where: '$colDate > $today');
+    var result = await db.query(tableName, where: '$colDate > $today AND $colCompleted = 0');
     return result;
   }
 
@@ -207,7 +208,7 @@ class DatabaseHelper {
     int today = DateTime.now().millisecondsSinceEpoch;
     int lastDate = DateTime.now().getLastDayOfMonth().millisecondsSinceEpoch;
     Database db = await this.database;
-    var result = await db.query(tableName, where: '$colDate >= $today AND $colDate < $lastDate' );
+    var result = await db.query(tableName, where: '$colDate >= $today AND $colDate < $lastDate AND $colCompleted = 0' );
     return result;
   }
 
@@ -215,7 +216,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getAfterThisMonthToDo() async {
     int lastDate = DateTime.now().getLastDayOfMonth().millisecondsSinceEpoch;
     Database db = await this.database;
-    var result = await db.query(tableName, where: '$colDate > $lastDate' );
+    var result = await db.query(tableName, where: '$colDate > $lastDate AND $colCompleted = 0' );
     return result;
   }
 
@@ -231,7 +232,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getFavoriteToDo() async {
     Database db = await this.database;
     int today = DateTime.now().millisecondsSinceEpoch;
-    var result = await db.query(tableName, where: '$colFavourite = 1 AND $colDate > $today' );
+    var result = await db.query(tableName, where: '$colFavourite = 1 AND $colDate > $today AND $colCompleted = 0' );
     return result;
   }
 
