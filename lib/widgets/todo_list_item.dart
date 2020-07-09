@@ -73,13 +73,22 @@ class _ToDoListItemState extends State<ToDoListItem> {
                   ),
                 ),
                 const SizedBox(width: 8,),
-                IconButton(
-                  icon: Icon(itemToDo.isFavourite == 0 ? Icons.favorite_border : Icons.favorite , color: Theme.of(context).primaryColor,),
-                  onPressed: () {
-                    widget.onFavClick();
-                    isFav = !isFav;
-                    manageFavourite();
-                  },
+                Semantics(
+                  label: "Favorite button",
+                  hint: "Double tap to mark favorite or remove favorite",
+                  selected: itemToDo.isFavourite == 0 ? false : true,
+                  child: Container(
+                    width: 40,
+                    height: 100,
+                    child: IconButton(
+                      icon: Icon(itemToDo.isFavourite == 0 ? Icons.favorite_border : Icons.favorite , color: Theme.of(context).primaryColor,),
+                      onPressed: () {
+                        widget.onFavClick();
+                        isFav = !isFav;
+                        manageFavourite();
+                      },
+                    ),
+                  ),
                 )
               ],
             ),
