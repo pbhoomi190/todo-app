@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 const shoppingImage = "assets/images/shopping.jpg";
 const workImage = "assets/images/work.png";
 const eventImage = "assets/images/event.png";
@@ -8,3 +10,4 @@ const tripImage = "assets/images/trip.png";
 const favImage = "assets/images/fav.png";
 const allImage = "assets/images/all.png";
 const clockImage = "assets/images/clock.jpg";
+Locale appGlobalLocale = Locale('en');

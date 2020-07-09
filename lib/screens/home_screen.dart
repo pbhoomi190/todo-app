@@ -9,6 +9,7 @@ import 'package:fluttertododemo/screens/todo_list_screen.dart';
 import 'package:fluttertododemo/screens/upcoming_screen.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_route_transition.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,7 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-            CustomTopBar(title: obj.getTranslatedValue("home_title"), subTitle: obj.getTranslatedValue("home_subtitle"), isLeft: false, isRight: true, onSetting: () {
+            CustomTopBar(title: obj.getTranslatedValue("home_title"),
+              subTitle: obj.getTranslatedValue("home_subtitle"),
+              isLeft: false,
+              isRight: true,
+              onSetting: () {
               Navigator.of(context).push(CustomRoute(page: SettingScreen(), type: PageTransitionType.rippleRightDown));
             },),
             SizedBox(height: 30,),

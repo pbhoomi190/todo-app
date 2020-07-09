@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 
 class CustomTopBar extends StatelessWidget {
@@ -19,7 +20,7 @@ class CustomTopBar extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Align(
-              alignment: Alignment.topLeft,
+              alignment: appGlobalLocale.languageCode == 'ar' ? Alignment.topRight :  Alignment.topLeft,
               child: Visibility(
                 visible: isLeft,
                 child: IconButton(
@@ -43,7 +44,7 @@ class CustomTopBar extends StatelessWidget {
                   ],
                 )),
             Align(
-              alignment: Alignment.topRight,
+              alignment: appGlobalLocale.languageCode == 'ar' ? Alignment.topLeft :  Alignment.topRight,
               child: Visibility(
                 visible: isRight,
                 child: Container(

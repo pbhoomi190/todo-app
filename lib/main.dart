@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/screens/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
@@ -45,6 +46,7 @@ class _MyAppState extends State<MyApp> {
     print(locale);
     setState(() {
       homeLocale = locale;
+      appGlobalLocale = homeLocale;
       setLocaleOnPreferences();
     });
   }
@@ -55,6 +57,7 @@ class _MyAppState extends State<MyApp> {
       print("Theme := ${prefs.getBool('isDark')} and Locale := ${prefs.getString('locale')}");
       themeMode = prefs.getBool('isDark') ?? false ? ThemeMode.dark : ThemeMode.light;
       homeLocale = Locale(prefs.getString('locale') ?? "en");
+      appGlobalLocale = homeLocale;
     });
   }
 
