@@ -22,6 +22,7 @@
   "repeat_slide_button" : "इसे दोहराओ",
   "edit_slide_button" : "संपादित करें",
   "delete_slide_button" : "हटाएं",
+  "complete_slide_button" : "पूर्ण",
   "no_completed_msg" : "कोई पूर्ण आइटम नहीं मिला",
   "no_favorite_msg" : "कोई पसंदीदा वस्तु नहीं मिली",
   "favorite_title" : "पसंदीदा",

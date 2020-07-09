@@ -22,6 +22,7 @@
   "repeat_slide_button" : "كرر",
   "edit_slide_button" : "تعديل",
   "delete_slide_button" : "حذف",
+  "complete_slide_button" : "اكتمال",
   "no_completed_msg" : "لم يتم العثور على عناصر مكتملة",
   "no_favorite_msg" : "لم يتم العثور على عناصر مفضلة",
   "favorite_title" : "المفضلة",

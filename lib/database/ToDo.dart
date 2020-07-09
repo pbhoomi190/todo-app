@@ -8,6 +8,7 @@ final String colDate = "date";
 final String colCategory = "category";
 final String colReminder = "isReminderOn";
 final String colFavourite = "isFavourite";
+final String colCompleted = "isCompleted";
 
 final String reminderTable = "reminder_table";
 final String reminderColId = "reminder_id";
@@ -59,6 +60,7 @@ class ToDo {
   @required String category;
   @required int isReminderOn = 1;
   int isFavourite = 0;
+  int isCompleted = 0;
 
   ToDo({this.title, this.description, this.date, this.category, this.isReminderOn});
 
@@ -71,6 +73,7 @@ class ToDo {
       colCategory: category,
       colReminder: isReminderOn,
       colFavourite: isFavourite,
+      colCompleted: isCompleted
     };
     return map;
   }
@@ -83,5 +86,6 @@ class ToDo {
     category = map[colCategory];
     isReminderOn = map[colReminder];
     isFavourite = map[colFavourite];
+    isCompleted = map[colCompleted];
   }
 }

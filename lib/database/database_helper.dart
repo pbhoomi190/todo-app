@@ -160,6 +160,12 @@ class DatabaseHelper {
     return result;
   }
 
+  Future markCompletedToDoItem(ToDo toDo) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('UPDATE $tableName SET $colCompleted = 1 WHERE $colId == ${toDo.id}');
+    return result;
+  }
+
   // Turn on/off reminder for To-Do
   Future turnOnOffReminderToDoItem(ToDo todo, int isOn) async {
     Database db = await this.database;
@@ -217,7 +223,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getCompletedToDo() async {
     int today = DateTime.now().millisecondsSinceEpoch;
     Database db = await this.database;
-    var result = await db.query(tableName, where: '$colDate < $today');
+    var result = await db.query(tableName, where: '$colDate < $today OR $colCompleted = 1');
     return result;
   }
 

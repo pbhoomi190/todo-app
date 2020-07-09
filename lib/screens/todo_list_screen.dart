@@ -61,6 +61,14 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     }
   }
 
+  markComplete(ToDo toDo) {
+    helper.markCompletedToDoItem(toDo).then((value) {
+      setState(() {
+        filteredToDo.removeWhere((element) => element.id == toDo.id);
+      });
+    });
+  }
+
   void reloadData(CategoryType category) {
     filteredToDo.forEach((element) {
       debugPrint("${element.toMap()}");
@@ -236,6 +244,14 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                                 onTap: () {
                                   print("Edit");
                                   Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: filteredToDo[index],), type: PageTransitionType.slideLeft));
+                                },
+                              ),
+                              IconSlideAction(
+                                caption: obj.getTranslatedValue("complete_slide_button"),
+                                color: Theme.of(context).primaryColorLight,
+                                icon: Icons.edit,
+                                onTap: () {
+                                  markComplete(filteredToDo[index]);
                                 },
                               ),
                               IconSlideAction(

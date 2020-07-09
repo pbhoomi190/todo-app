@@ -22,6 +22,7 @@
   "repeat_slide_button" : "Repetir",
   "edit_slide_button" : "Editar",
   "delete_slide_button" : "Eliminar",
+  "complete_slide_button" : "Completa",
   "no_completed_msg" : "No se encontraron elementos completados",
   "no_favorite_msg" : "No se encontraron artículos favoritos",
   "favorite_title" : "Favoritas",

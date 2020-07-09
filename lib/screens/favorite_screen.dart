@@ -93,6 +93,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     );
   }
 
+  markComplete(ToDo toDo) {
+    helper.markCompletedToDoItem(toDo).then((value) {
+      setState(() {
+        favorites.removeWhere((element) => element.id == toDo.id);
+      });
+    });
+  }
+
   @override
   void initState() {
     getFavorites();
@@ -133,6 +141,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 icon: Icons.edit,
                 onTap: () {
                   Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: favorites[index],), type: PageTransitionType.slideLeft));
+                },
+              ),
+              IconSlideAction(
+                caption: obj.getTranslatedValue("complete_slide_button"),
+                color: Theme.of(context).primaryColorLight,
+                icon: Icons.edit,
+                onTap: () {
+                  markComplete(favorites[index]);
                 },
               ),
               IconSlideAction(

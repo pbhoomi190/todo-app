@@ -50,6 +50,30 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     });
   }
 
+  markComplete(ToDo toDo, UpcomingType type) {
+    helper.markCompletedToDoItem(toDo).then((value) {
+      setState(() {
+        switch (type) {
+          case UpcomingType.thisWeek:
+            thisWeek.removeWhere((element) {
+              return element == toDo;
+            });
+            break;
+          case UpcomingType.thisMonth:
+            thisMonth.removeWhere((element) {
+              return element == toDo;
+            });
+            break;
+          case UpcomingType.afterThisMonth:
+            laterAfterThisMonth.removeWhere((element) {
+              return element == toDo;
+            });
+            break;
+        }
+      });
+    });
+  }
+
   showAlertDialogue(BuildContext context, ToDo toDo, UpcomingType type) {
     var obj = LocalizationManager.of(context);
     showDialog(
@@ -136,6 +160,14 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 },
               ),
               IconSlideAction(
+                caption: obj.getTranslatedValue("complete_slide_button"),
+                color: Theme.of(context).primaryColorLight,
+                icon: Icons.edit,
+                onTap: () {
+                  markComplete(thisWeek[index], UpcomingType.thisWeek);
+                },
+              ),
+              IconSlideAction(
                 caption: obj.getTranslatedValue("delete_slide_button"),
                 color: Colors.red,
                 icon: Icons.delete,
@@ -176,6 +208,14 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               onTap: () {
                 print("Edit");
                 Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
+              },
+            ),
+            IconSlideAction(
+              caption: obj.getTranslatedValue("complete_slide_button"),
+              color: Theme.of(context).primaryColorLight,
+              icon: Icons.edit,
+              onTap: () {
+                markComplete(thisMonth[index], UpcomingType.thisMonth);
               },
             ),
             IconSlideAction(
@@ -220,6 +260,14 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               onTap: () {
                 print("Edit");
                 Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
+              },
+            ),
+            IconSlideAction(
+              caption: obj.getTranslatedValue("complete_slide_button"),
+              color: Theme.of(context).primaryColorLight,
+              icon: Icons.edit,
+              onTap: () {
+                markComplete(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
               },
             ),
             IconSlideAction(
