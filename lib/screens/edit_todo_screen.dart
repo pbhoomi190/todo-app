@@ -91,22 +91,18 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     date = dateController != null ? dateController.text : "";
     validate();
     titleController.addListener(() {
-      print("title: ${titleController.value}");
       title = titleController.text;
       validate();
     });
     descController.addListener(() {
-      print("desc: ${descController.value}");
       desc = descController.text;
       validate();
     });
     categoryController.addListener(() {
-      print("category: ${categoryController.value}");
       cat = categoryController.text;
       validate();
     });
     dateController.addListener(() {
-      print("date: ${dateController.value}");
       date = dateController.text;
       validate();
     });

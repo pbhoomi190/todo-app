@@ -60,22 +60,18 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void addListenersToTextField() {
       titleController.addListener(() {
-          print("title: ${titleController.value}");
           title = titleController.text;
           validate();
       });
       descController.addListener(() {
-        print("desc: ${descController.value}");
         desc = descController.text;
         validate();
       });
       categoryController.addListener(() {
-        print("category: ${categoryController.value}");
         cat = categoryController.text;
         validate();
       });
       dateController.addListener(() {
-        print("date: ${dateController.value}");
         date = dateController.text;
         validate();
       });
@@ -95,7 +91,6 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
          var dateStr = await selectedDate.formattedDateString();
          setState(() {
            dateInt = selectedDate.millisecondsSinceEpoch;
-           print("DATE STRING======= $dateStr");
            dateController.text = dateStr;
          });
        }
