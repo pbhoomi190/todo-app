@@ -142,156 +142,217 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     });
   }
 
-  Widget thisWeekSection() {
+  Widget sliverScroll() {
+    var obj = LocalizationManager.of(context);
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
+                color: Theme.of(context).primaryColor
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(obj.getTranslatedValue("this_week_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+            ),
+          ),
+        ),
+        sliverWeek(),
+        SliverToBoxAdapter(child: SizedBox(height: 15,),),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
+                color: Theme.of(context).primaryColor
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(obj.getTranslatedValue("this_month_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+            ),
+          ),
+        ),
+        sliverMonth(),
+        SliverToBoxAdapter(child: SizedBox(height: 15,),),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
+                color: Theme.of(context).primaryColor
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(obj.getTranslatedValue("later_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
+            ),
+          ),
+        ),
+        sliverLater(),
+      ],
+    );
+  }
+
+  Widget sliverWeek() {
+
     var obj = LocalizationManager.of(context);
     if (thisWeek.length > 0) {
-      return  ListView.builder(itemBuilder: (context, index) {
-        return Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.2,
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: obj.getTranslatedValue("edit_slide_button"),
-                color: Theme.of(context).primaryColorLight,
-                icon: Icons.edit,
-                onTap: () {
-                  print("Edit");
-                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisWeek[index],), type: PageTransitionType.slideLeft));
-                },
-              ),
-              IconSlideAction(
-                caption: obj.getTranslatedValue("complete_slide_button"),
-                color: Theme.of(context).primaryColor,
-                icon: Icons.replay,
-                onTap: () {
-                  markComplete(thisWeek[index], UpcomingType.thisWeek);
-                },
-              ),
-              IconSlideAction(
-                caption: obj.getTranslatedValue("delete_slide_button"),
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () {
-                  print("Delete");
-                  showAlertDialogue(context, thisWeek[index], UpcomingType.thisWeek);
-                },
-              ),
-            ],
-            child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},)
-        );
-      },
-        itemCount: thisWeek.length,
-        shrinkWrap: true,
-      );
+      return  SliverList(delegate: SliverChildBuilderDelegate(
+              (context, index) {
+            return Slidable(
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.2,
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: obj.getTranslatedValue("edit_slide_button"),
+                    color: Theme.of(context).primaryColorLight,
+                    icon: Icons.edit,
+                    onTap: () {
+                      print("Edit");
+                      Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisWeek[index],), type: PageTransitionType.slideLeft));
+                    },
+                  ),
+                  IconSlideAction(
+                    caption: obj.getTranslatedValue("complete_slide_button"),
+                    color: Theme.of(context).primaryColor,
+                    icon: Icons.replay,
+                    onTap: () {
+                      markComplete(thisWeek[index], UpcomingType.thisWeek);
+                    },
+                  ),
+                  IconSlideAction(
+                    caption: obj.getTranslatedValue("delete_slide_button"),
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () {
+                      print("Delete");
+                      showAlertDialogue(context, thisWeek[index], UpcomingType.thisWeek);
+                    },
+                  ),
+                ],
+                child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},)
+            );
+          },
+        childCount: thisWeek.length
+      ));
     } else {
-      return Container(
-        height: 50,
-        child: Center(
-          child: Text(obj.getTranslatedValue("no_item_week_msg"), style: Theme.of(context).textTheme.bodyText2,),
+      return SliverToBoxAdapter(
+        child: Container(
+          height: 50,
+          child: Center(
+            child: Text(obj.getTranslatedValue("no_item_week_msg"), style: Theme.of(context).textTheme.bodyText2,),
+          ),
         ),
       );
     }
   }
 
-  Widget thisMonthSection() {
+  Widget sliverMonth() {
+
     var obj = LocalizationManager.of(context);
     if (thisMonth.length > 0) {
-      return ListView.builder(itemBuilder: (context, index) {
-        return Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.2,
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: obj.getTranslatedValue("edit_slide_button"),
-              color: Theme.of(context).primaryColorLight,
-              icon: Icons.edit,
-              onTap: () {
-                print("Edit");
-                Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
-              },
-            ),
-            IconSlideAction(
-              caption: obj.getTranslatedValue("complete_slide_button"),
-              color: Theme.of(context).primaryColor,
-              icon: Icons.replay,
-              onTap: () {
-                markComplete(thisMonth[index], UpcomingType.thisMonth);
-              },
-            ),
-            IconSlideAction(
-              caption: obj.getTranslatedValue("delete_slide_button"),
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () {
-                print("Delete");
-                showAlertDialogue(context, thisMonth[index], UpcomingType.thisMonth);
-              },
-            ),
-          ],
-          child: ToDoListItem(
-            toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},),
-        );
-      },
-        itemCount: thisMonth.length,
-        shrinkWrap: true,
+      return  SliverList(delegate: SliverChildBuilderDelegate(
+              (context, index) {
+            return Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.2,
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("edit_slide_button"),
+                  color: Theme.of(context).primaryColorLight,
+                  icon: Icons.edit,
+                  onTap: () {
+                    print("Edit");
+                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
+                  },
+                ),
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("complete_slide_button"),
+                  color: Theme.of(context).primaryColor,
+                  icon: Icons.replay,
+                  onTap: () {
+                    markComplete(thisMonth[index], UpcomingType.thisMonth);
+                  },
+                ),
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("delete_slide_button"),
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () {
+                    print("Delete");
+                    showAlertDialogue(context, thisMonth[index], UpcomingType.thisMonth);
+                  },
+                ),
+              ],
+              child: ToDoListItem(
+                toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},),
+            );
+          },
+        childCount: thisMonth.length
+      ),
       );
     } else {
-      return Container(
-        height: 50,
-        child: Center(
-          child: Text(obj.getTranslatedValue("no_item_month_msg"), style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,),
+      return SliverToBoxAdapter(
+        child: Container(
+          height: 50,
+          child: Center(
+            child: Text(obj.getTranslatedValue("no_item_month_msg"), style: Theme.of(context).textTheme.bodyText2,),
+          ),
         ),
       );
     }
   }
 
-  Widget laterAfterThisMonthSection() {
+  Widget sliverLater() {
     var obj = LocalizationManager.of(context);
     if (laterAfterThisMonth.length > 0) {
-      return ListView.builder(itemBuilder: (context, index) {
-        return Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.2,
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: obj.getTranslatedValue("edit_slide_button"),
-              color: Theme.of(context).primaryColorLight,
-              icon: Icons.edit,
-              onTap: () {
-                print("Edit");
-                Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
-              },
-            ),
-            IconSlideAction(
-              caption: obj.getTranslatedValue("complete_slide_button"),
-              color: Theme.of(context).primaryColor,
-              icon: Icons.replay,
-              onTap: () {
-                markComplete(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
-              },
-            ),
-            IconSlideAction(
-              caption: obj.getTranslatedValue("delete_slide_button"),
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () {
-                print("Delete");
-                showAlertDialogue(context, laterAfterThisMonth[index], UpcomingType.afterThisMonth);
-              },
-            ),
-          ],
-          child: ToDoListItem(
-            toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},),
-        );
-      },
-        itemCount: laterAfterThisMonth.length,
-        shrinkWrap: true,
-      );
+      return  SliverList(delegate: SliverChildBuilderDelegate(
+              (context, index) {
+            return Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.2,
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("edit_slide_button"),
+                  color: Theme.of(context).primaryColorLight,
+                  icon: Icons.edit,
+                  onTap: () {
+                    print("Edit");
+                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
+                  },
+                ),
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("complete_slide_button"),
+                  color: Theme.of(context).primaryColor,
+                  icon: Icons.replay,
+                  onTap: () {
+                    markComplete(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
+                  },
+                ),
+                IconSlideAction(
+                  caption: obj.getTranslatedValue("delete_slide_button"),
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () {
+                    print("Delete");
+                    showAlertDialogue(context, laterAfterThisMonth[index], UpcomingType.afterThisMonth);
+                  },
+                ),
+              ],
+              child: ToDoListItem(
+                toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},),
+            );
+          },
+          childCount: laterAfterThisMonth.length
+      ));
     } else {
-      return Container(
-        height: 50,
-        child: Center(
-          child: Text(obj.getTranslatedValue("no_item_later_msg"), style: Theme.of(context).textTheme.bodyText2,textAlign: TextAlign.center,),
+      return SliverToBoxAdapter(
+        child: Container(
+          height: 50,
+          child: Center(
+            child: Text(obj.getTranslatedValue("no_item_later_msg"), style: Theme.of(context).textTheme.bodyText2,),
+          ),
         ),
       );
     }
@@ -328,54 +389,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: thisMonthToDo.length > 0 || laterAfterThisMonth.length > 0 ? SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
-                  color: Theme.of(context).primaryColor
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(obj.getTranslatedValue("this_week_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                ),
-              ),
-              const SizedBox(height: 16,),
-              thisWeekSection(),
-              const SizedBox(height: 16,),
-              Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
-                    color: Theme.of(context).primaryColor
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(obj.getTranslatedValue("this_month_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                ),
-              ),
-              const SizedBox(height: 16,),
-              thisMonthSection(),
-              const SizedBox(height: 16,),
-              Container(
-                height: 40,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomRight:  Radius.circular(15)),
-                    color: Theme.of(context).primaryColor
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(obj.getTranslatedValue("later_title"), style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                ),
-              ),
-              const SizedBox(height: 16,),
-              laterAfterThisMonthSection(),
-            ],
-          ),
-        ) : Center(
+        child: thisMonthToDo.length > 0 || laterAfterThisMonth.length > 0 ? sliverScroll() : Center(
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Text(obj.getTranslatedValue("no_upcoming_msg"),
