@@ -68,5 +68,5 @@
   "reminder_msg_talkback" : "Activa o desactiva el recordatorio",
   "category_item_talkback" : "Artículo de categoría",
   "category_hint_talkback" : "Toca dos veces para mostrar la lista. Desplácese hacia la izquierda con dos dedos para desplazarse por la lista.",
-  "swipe_option_talkback" : "Deslice hacia la izquierda con dos dedos para habilitar más opciones en el elemento"
+  "swipe_option_talkback" : "Doble click para editar. Deslice hacia la izquierda con dos dedos para habilitar más opciones en el elemento"
 }
