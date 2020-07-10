@@ -251,6 +251,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(25),
                     ],
+                    autofocus: true,
                     controller: titleController,
                     decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("title_text"),

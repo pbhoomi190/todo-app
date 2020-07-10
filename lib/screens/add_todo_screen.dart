@@ -215,6 +215,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         LengthLimitingTextInputFormatter(25),
                       ],
                       controller: titleController,
+                      autofocus: true,
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("title_text"),
                         border: OutlineInputBorder(
