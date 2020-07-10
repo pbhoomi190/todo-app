@@ -174,6 +174,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
             ),
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 15,),),
         sliverMonth(),
         SliverToBoxAdapter(child: SizedBox(height: 15,),),
         SliverToBoxAdapter(
@@ -189,6 +190,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
             ),
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 15,),),
         sliverLater(),
       ],
     );
