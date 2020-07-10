@@ -29,7 +29,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   String date = "";
   bool isValid = false;
   int dateInt;
-  bool isReminder = true;
+  bool isReminder = false;
   DatabaseHelper helper = DatabaseHelper();
 
   void showSnackBar(String message) {
