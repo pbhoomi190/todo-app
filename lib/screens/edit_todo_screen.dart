@@ -309,17 +309,29 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
-                      Switch(
-                        value: isReminder,
-                        onChanged: (value) {
-                          updateReminder(value);
-                        },
-                      )
-                    ],
+                  Semantics(
+                    label: "Reminder",
+                    selected: isReminder,
+                    onTap: () {
+                      setState(() {
+                        isReminder = !isReminder;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
+                        Tooltip(
+                          message: "Turn on or off the reminder",
+                          child: Switch(
+                            value: isReminder,
+                            onChanged: (value) {
+                              updateReminder(value);
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

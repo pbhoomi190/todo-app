@@ -272,19 +272,32 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
-                      Switch(
-                        value: isReminder,
-                        onChanged: (value) {
-                          setState(() {
-                            isReminder = value;
-                          });
-                        },
-                      )
-                    ],
+                  Semantics(
+                    label: "Reminder",
+                    selected: isReminder,
+                    onTap: () {
+                      setState(() {
+                        isReminder = !isReminder;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
+                        Tooltip(
+                          message: "Turn on or off the reminder",
+                          child: Switch(
+                            value: isReminder,
+                            onChanged: (value) {
+                              setState(() {
+                                isReminder = value;
+                                print("Reminder value ==== $value");
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 30),
                   LimitedBox(
