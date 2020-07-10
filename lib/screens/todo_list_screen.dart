@@ -302,9 +302,10 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
   Widget itemCard(String title, String image, CategoryType type) {
 
     final selectedCategory = CategoryInheritedWidget.of(context).categoryType;
+    var obj = LocalizationManager.of(context);
     return Semantics(
-      label: "Category item $title",
-      hint: "Double tap to show list. Scroll left with two fingers to scroll through the list",
+      label: "${obj.getTranslatedValue("category_item_talkback")} $title",
+      hint:  obj.getTranslatedValue("category_hint_talkback"),
       value: title,
       selected: selectedCategory == type ? true : false,
       container: true,

@@ -61,5 +61,12 @@
   "select_language" : "Seleccione el idioma",
   "setting_btn_talkback" : "Ir a la pantalla de configuración",
   "add_todo_talkback" : "Ir a agregar pantalla de tareas",
-  "back_btn_talkback" : "Ir a la pantalla posterior"
+  "back_btn_talkback" : "Ir a la pantalla posterior",
+  "dark_theme_talkback" : "Opción de tema oscuro",
+  "dark_theme_msg_talkback" : "Activa o desactiva el tema oscuro",
+  "reminder_talkback" : "Recordatorio",
+  "reminder_msg_talkback" : "Activa o desactiva el recordatorio",
+  "category_item_talkback" : "Artículo de categoría",
+  "category_hint_talkback" : "Toca dos veces para mostrar la lista. Desplácese hacia la izquierda con dos dedos para desplazarse por la lista.",
+  "swipe_option_talkback" : "Deslice hacia la izquierda con dos dedos para habilitar más opciones en el elemento"
 }

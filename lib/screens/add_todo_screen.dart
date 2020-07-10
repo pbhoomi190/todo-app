@@ -274,7 +274,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                   ),
                   const SizedBox(height: 15),
                   Semantics(
-                    label: "Reminder",
+                    label: "reminder_talkback",
                     selected: isReminder,
                     onTap: () {
                       setState(() {
@@ -286,7 +286,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       children: <Widget>[
                         Expanded(child: Text(obj.getTranslatedValue("reminder_switch"), maxLines: 2,)),
                         Tooltip(
-                          message: "Turn on or off the reminder",
+                          message: obj.getTranslatedValue("reminder_msg_talkback"),
                           child: Switch(
                             value: isReminder,
                             onChanged: (value) {

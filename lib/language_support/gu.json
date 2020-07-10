@@ -61,5 +61,12 @@
   "select_language" : "ભાષા પસંદ કરો",
   "setting_btn_talkback" : "સેટિંગ્સ સ્ક્રીન પર જાઓ",
   "add_todo_talkback" : "ટૂ-ડૂ ઉમેરવા જાઓ",
-  "back_btn_talkback" : "પાછળની સ્ક્રીન પર જાઓ"
+  "back_btn_talkback" : "પાછળની સ્ક્રીન પર જાઓ",
+  "dark_theme_talkback" : "ડાર્ક થીમ વિકલ્પ",
+  "dark_theme_msg_talkback" : "ડાર્ક થીમ ચાલુ અથવા બંધ કરો",
+  "reminder_talkback" : "રીમાઇન્ડર",
+  "reminder_msg_talkback" : "રીમાઇન્ડર ચાલુ અથવા બંધ કરો",
+  "category_item_talkback" : "કેટેગરી આઇટમ",
+  "category_hint_talkback" : "સૂચિ બતાવવા માટે બે વાર ટેપ કરો. સૂચિમાંથી સ્ક્રોલ કરવા માટે બે આંગળીઓથી ડાબે સ્ક્રોલ કરો",
+  "swipe_option_talkback" : "આઇટમ પર વધુ વિકલ્પો સક્ષમ કરવા માટે, બે આંગળીઓથી ડાબી બાજુ સ્વાઇપ કરો"
 }

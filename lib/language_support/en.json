@@ -61,5 +61,12 @@
   "select_language" : "Select language",
   "setting_btn_talkback" : "Go to settings screen",
   "add_todo_talkback" : "Go to add to-do screen",
-  "back_btn_talkback" : "Go to back screen"
+  "back_btn_talkback" : "Go to back screen",
+  "dark_theme_talkback" : "Dark theme option",
+  "dark_theme_msg_talkback" : "Turn on or off the dark theme",
+  "reminder_talkback" : "Reminder",
+  "reminder_msg_talkback" : "Turn on or off the reminder",
+  "category_item_talkback" : "Category item",
+  "category_hint_talkback" : "Double tap to show list. Scroll left with two fingers to scroll through the list",
+  "swipe_option_talkback" : "Swipe left with two fingers to enable more options on item"
 }

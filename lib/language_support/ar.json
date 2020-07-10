@@ -61,5 +61,12 @@
   "select_language" : "اختار اللغة",
   "setting_btn_talkback" : "انتقل إلى شاشة الإعدادات",
   "add_todo_talkback" : "انتقل إلى شاشة المهام المطلوبة",
-  "back_btn_talkback" : "انتقل إلى الشاشة الخلفية"
+  "back_btn_talkback" : "انتقل إلى الشاشة الخلفية",
+  "dark_theme_talkback" : "خيار المظهر الداكن",
+  "dark_theme_msg_talkback" : "قم بتشغيل أو إيقاف تشغيل المظهر الداكن",
+  "reminder_talkback" : "تذكير",
+  "reminder_msg_talkback" : "قم بتشغيل أو إيقاف التذكير",
+  "category_item_talkback" : "عنصر الفئة",
+  "category_hint_talkback" : "انقر مرّتين لإظهار القائمة. مرر إلى اليسار بإصبعين للتمرير عبر القائمة",
+  "swipe_option_talkback" : "اسحب إلى اليسار بإصبعين لتمكين المزيد من الخيارات على العنصر"
 }

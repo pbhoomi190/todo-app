@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
+import 'package:fluttertododemo/language_support/localization_manager.dart';
 
 class ToDoListItem extends StatefulWidget {
 
@@ -46,6 +47,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
 
   @override
   Widget build(BuildContext context) {
+    var obj = LocalizationManager.of(context);
     return Container(
       height: 120,
       padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
@@ -74,7 +76,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
                 ),
                 const SizedBox(width: 8,),
                 Semantics(
-                  label: "Swipe left with two fingers to enable more options on item",
+                  label: obj.getTranslatedValue("swipe_option_talkback"),
                   selected: itemToDo.isFavourite == 0 ? false : true,
                   onTap: () {
                     widget.onFavClick();
