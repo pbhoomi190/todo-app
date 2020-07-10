@@ -77,10 +77,16 @@ class _ToDoListItemState extends State<ToDoListItem> {
                   label: "Favorite button",
                   hint: "Double tap to mark favorite or remove favorite",
                   selected: itemToDo.isFavourite == 0 ? false : true,
+                  onTap: () {
+                    widget.onFavClick();
+                    isFav = !isFav;
+                    manageFavourite();
+                  },
                   child: Container(
                     width: 40,
                     height: 100,
                     child: IconButton(
+                      tooltip: "favorite",
                       icon: Icon(itemToDo.isFavourite == 0 ? Icons.favorite_border : Icons.favorite , color: Theme.of(context).primaryColor,),
                       onPressed: () {
                         widget.onFavClick();
