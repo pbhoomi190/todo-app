@@ -206,7 +206,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.2,
                 secondaryActions: <Widget>[
-                  IconSlideAction(
+                 /* IconSlideAction(
                     caption: obj.getTranslatedValue("edit_slide_button"),
                     color: Theme.of(context).primaryColorLight,
                     icon: Icons.edit,
@@ -214,7 +214,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                       print("Edit");
                       Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisWeek[index],), type: PageTransitionType.slideLeft));
                     },
-                  ),
+                  ),*/
                   IconSlideAction(
                     caption: obj.getTranslatedValue("complete_slide_button"),
                     color: Theme.of(context).primaryColor,
@@ -233,7 +233,11 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                     },
                   ),
                 ],
-                child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},)
+                child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},
+                  onEditClick: () {
+                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisWeek[index],), type: PageTransitionType.slideLeft));
+                  },
+                )
             );
           },
         childCount: thisWeek.length
@@ -260,7 +264,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.2,
               secondaryActions: <Widget>[
-                IconSlideAction(
+               /* IconSlideAction(
                   caption: obj.getTranslatedValue("edit_slide_button"),
                   color: Theme.of(context).primaryColorLight,
                   icon: Icons.edit,
@@ -268,7 +272,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                     print("Edit");
                     Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
                   },
-                ),
+                ),*/
                 IconSlideAction(
                   caption: obj.getTranslatedValue("complete_slide_button"),
                   color: Theme.of(context).primaryColor,
@@ -288,7 +292,11 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 ),
               ],
               child: ToDoListItem(
-                toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},),
+                toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},
+                onEditClick: () {
+                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
+                },
+              ),
             );
           },
         childCount: thisMonth.length
@@ -315,7 +323,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.2,
               secondaryActions: <Widget>[
-                IconSlideAction(
+                /*IconSlideAction(
                   caption: obj.getTranslatedValue("edit_slide_button"),
                   color: Theme.of(context).primaryColorLight,
                   icon: Icons.edit,
@@ -323,7 +331,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                     print("Edit");
                     Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
                   },
-                ),
+                ),*/
                 IconSlideAction(
                   caption: obj.getTranslatedValue("complete_slide_button"),
                   color: Theme.of(context).primaryColor,
@@ -343,7 +351,11 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 ),
               ],
               child: ToDoListItem(
-                toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},),
+                toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},
+                onEditClick: () {
+                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
+                },
+              ),
             );
           },
           childCount: laterAfterThisMonth.length

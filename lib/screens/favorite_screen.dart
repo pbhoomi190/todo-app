@@ -135,14 +135,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.2,
             secondaryActions: <Widget>[
-              IconSlideAction(
+             /* IconSlideAction(
                 caption: obj.getTranslatedValue("edit_slide_button"),
                 color: Theme.of(context).primaryColorLight,
                 icon: Icons.edit,
                 onTap: () {
                   Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: favorites[index],), type: PageTransitionType.slideLeft));
                 },
-              ),
+              ),*/
               IconSlideAction(
                 caption: obj.getTranslatedValue("complete_slide_button"),
                 color: Theme.of(context).primaryColor,
@@ -165,7 +165,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               setState(() {
                 favorites.remove(favorites[index]);
               });
-            },));
+            }, onEditClick: () {
+              Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: favorites[index],), type: PageTransitionType.slideLeft));
+            },
+            )
+        );
       },
         itemCount: favorites != null && favorites.length > 0 ? favorites.length : 0,
       ): Center(

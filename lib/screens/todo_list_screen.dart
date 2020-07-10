@@ -237,7 +237,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                             actionPane: SlidableDrawerActionPane(),
                             actionExtentRatio: 0.2,
                             secondaryActions: <Widget>[
-                              IconSlideAction(
+                             /* IconSlideAction(
                                 caption: obj.getTranslatedValue("edit_slide_button"),
                                 color: Theme.of(context).primaryColorLight,
                                 icon: Icons.edit,
@@ -245,7 +245,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                                   print("Edit");
                                   Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: filteredToDo[index],), type: PageTransitionType.slideLeft));
                                 },
-                              ),
+                              ),*/
                               IconSlideAction(
                                 caption: obj.getTranslatedValue("complete_slide_button"),
                                 color: Theme.of(context).primaryColor,
@@ -264,7 +264,9 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                                 },
                               ),
                             ],
-                            child: ToDoListItem(toDo: filteredToDo[index], key: UniqueKey(), onFavClick: () {},),
+                            child: ToDoListItem(toDo: filteredToDo[index], key: UniqueKey(), onFavClick: () {}, onEditClick: () {
+                              Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: filteredToDo[index],), type: PageTransitionType.slideLeft));
+                            },),
                           ),
                         ),
                       );
