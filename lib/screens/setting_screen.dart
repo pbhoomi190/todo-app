@@ -238,13 +238,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 child: Semantics(
-                  label: "Dark theme option",
+                  label: obj.getTranslatedValue("dark_theme_talkback"),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(obj.getTranslatedValue("dark_theme"), style: Theme.of(context).textTheme.bodyText1,),
                       Tooltip(
-                        message: "Turn on or off the dark theme",
+                        message: obj.getTranslatedValue("dark_theme_msg_talkback"),
                         child: Switch(
                           activeColor: Theme.of(context).primaryColor,
                           value: isDarkTheme,
