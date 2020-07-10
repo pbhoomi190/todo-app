@@ -74,8 +74,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
                 ),
                 const SizedBox(width: 8,),
                 Semantics(
-                  label: "Favorite button",
-                  hint: "Double tap to mark favorite or remove favorite",
+                  label: "Swipe left with two fingers to enable more options on item",
                   selected: itemToDo.isFavourite == 0 ? false : true,
                   onTap: () {
                     widget.onFavClick();

@@ -303,7 +303,7 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
 
     final selectedCategory = CategoryInheritedWidget.of(context).categoryType;
     return Semantics(
-      label: "Category item",
+      label: "Category item $title",
       hint: "Double tap to show list. Scroll left with two fingers to scroll through the list",
       value: title,
       selected: selectedCategory == type ? true : false,
