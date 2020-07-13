@@ -33,7 +33,7 @@ class DatabaseHelper {
   Future<Database> initDatabase() async {
     // Get path for directory
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'notes.db';
+    String path = directory.path + 'todo.db';
     //Open/Create database at this path
     var todoDatabase = await openDatabase(path, version: 1, onCreate: _createDB);
     return todoDatabase;
@@ -41,6 +41,13 @@ class DatabaseHelper {
 
   // Create Database
   Future _createDB(Database db, int newVersion) async {
+
+    await db.execute('CREATE TABLE $categoryTable('
+        '$categoryColId INTEGER PRIMARY KEY AUTOINCREMENT, '
+        '$categoryColName TEXT, '
+        '$categoryColImage TEXT)'
+    );
+
     await db.execute('CREATE TABLE $tableName('
         '$colId INTEGER PRIMARY KEY AUTOINCREMENT, '
         '$colTitle TEXT, '
@@ -49,33 +56,68 @@ class DatabaseHelper {
         '$colCategory TEXT, '
         '$colReminder INTEGER, '
         '$colFavourite INTEGER, '
-        '$colCompleted INTEGER)');
+        '$colCompleted INTEGER, '
+        '$categoryColId INTEGER, '
+        'FOREIGN KEY ($categoryColId) REFERENCES $categoryTable($categoryColId))'
+    );
+
     await db.execute('CREATE TABLE $reminderTable('
         '$reminderColId INTEGER PRIMARY KEY AUTOINCREMENT, '
         '$reminderColName TEXT, '
         '$reminderColTime INTEGER, '
         '$reminderColSelected INTEGER)'
     ).then((value) {
-      Reminder.getAllReminder().forEach((element) {
-        addReminder(element);
-      });
+      addCategoryAndReminder();
+//      Reminder.getAllReminder().forEach((element) {
+//        addReminder(element);
+//      });
     });
   }
 
   getDatabase() async {
     Database db = await this.database;
+
   }
 
   // Putting the arguments in curly braces makes it optional :
   // String title, String description, String date, String category, {int isReminderOn = 1, int isFavourite = 0}
 
+  addCategoryAndReminder() async {
+    Database db = await this.database;
+    List<Reminder> reminders = Reminder.getAllReminder();
+    List<Categories> categories = Categories.getDefaultCategories();
+
+    await db.transaction((txn) async {
+      categories.forEach((element) async {
+        var resultId = await txn.insert(categoryTable, element.toMap());
+        debugPrint("Categories Result id=======> $resultId");
+      });
+      reminders.forEach((element) async {
+        var resultId = await txn.insert(reminderTable, element.toMap());
+        debugPrint("Reminder Result id=======> $resultId");
+      });
+    });
+  }
+
+  // Add categories
+  addCategory(Categories categories) async {
+    debugPrint("Category to add:- ${categories.toMap()}");
+    Database db = await this.database;
+    await db.transaction((txn) async {
+      var resultId = await txn.insert(categoryTable, categories.toMap());
+
+      debugPrint("Categories Result id=======> $resultId");
+    });
+  }
+
+
   // Add new reminder
-   addReminder(Reminder reminder) async {
+   addReminder(Reminder reminder, List<Categories> array) async {
     debugPrint("Reminder to add:- ${reminder.toMap()}");
     Database db = await this.database;
     await db.transaction((txn) async {
-      var resultId = txn.insert(reminderTable, reminder.toMap());
-      print("Result id=======> $resultId");
+      var resultId = await txn.insert(reminderTable, reminder.toMap());
+      debugPrint("Reminder Result id=======> $resultId");
     });
   }
 

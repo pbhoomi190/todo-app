@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+// Category table
+final String categoryTable = "category_table";
+final String categoryColId = "category_id";
+final String categoryColName = "category_name";
+final String categoryColImage = "category_image";
+final String categoryConstraint ="fk_categories";
+
+// To-Do table
 final String tableName = 'todo_table';
 final String colId = 'id';
 final String colTitle = 'title';
@@ -10,12 +18,47 @@ final String colReminder = "isReminderOn";
 final String colFavourite = "isFavourite";
 final String colCompleted = "isCompleted";
 
+// Reminder table
 final String reminderTable = "reminder_table";
 final String reminderColId = "reminder_id";
 final String reminderColName = "reminder_name";
 final String reminderColTime = "reminder_time";
 final String reminderColSelected = "reminder_selected";
 
+
+class Categories {
+  int id;
+  @required String name;
+  @required String image;
+
+  Categories({this.id, this.name, this.image});
+
+  static List<Categories> getDefaultCategories() {
+    return [
+      Categories(name: "Shopping", image: "assets/images/shopping.jpg"),
+      Categories(name: "Event", image: "assets/images/event.png"),
+      Categories(name: "Meeting", image: "assets/images/meeting.jpg"),
+      Categories(name: "Work", image: "assets/images/work.png"),
+      Categories(name: "Trip", image: "assets/images/trip.png"),
+      Categories(name: "Other", image: "assets/images/todo.png"),
+    ];
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      categoryColId: id,
+      categoryColName: name,
+      categoryColImage: image,
+    };
+    return map;
+  }
+
+  Categories.fromMap(Map<String, dynamic> map) {
+    id = map[categoryColId];
+    name = map[categoryColName];
+    image = map[categoryColImage];
+  }
+}
 
 class Reminder {
   int id;
