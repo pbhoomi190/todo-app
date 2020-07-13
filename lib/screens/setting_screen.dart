@@ -210,7 +210,7 @@ class _SettingScreenState extends State<SettingScreen> {
               new Expanded(
                 child: new TextField(
                   controller: textCategoryController,
-                  maxLength: 20,
+                  maxLength: 15,
                   autofocus: true,
                   decoration: new InputDecoration(
                       labelText: obj.getTranslatedValue("category_label"), hintText: obj.getTranslatedValue("category_hint")),

@@ -102,6 +102,9 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
       var category = Categories.fromMap(element);
       categories.add(category);
     });
+    setState(() {
+
+    });
     title = titleController.text;
     desc = descController.text;
     cat = categoryController.text;
