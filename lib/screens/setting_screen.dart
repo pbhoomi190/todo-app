@@ -8,6 +8,7 @@ import 'package:fluttertododemo/main.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import 'package:fluttertododemo/widgets/time_select_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertododemo/constants/constants.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -19,7 +20,9 @@ class _SettingScreenState extends State<SettingScreen> {
   Reminder selectedTime;
   DatabaseHelper helper = DatabaseHelper();
   List<Reminder> reminderTimes = [];
+  List<Categories> allCategories = [];
   Language selectedLanguage = Language.listOfLanguage().first;
+  TextEditingController textCategoryController = TextEditingController(text: "");
 
   void changeLanguage(Language language) {
     print(language.languageCode);
@@ -37,8 +40,13 @@ class _SettingScreenState extends State<SettingScreen> {
     selectedLanguage = Language.listOfLanguage().firstWhere((element) => element.languageCode == locale);
   }
 
-  fetchReminderTimes() async {
+  fetchFromDatabase() async {
     var results = await helper.fetchReminders();
+    var arrCategory = await helper.fetchCategories(showHidden: false);
+    arrCategory.forEach((element) {
+      var category = Categories.fromMap(element);
+      allCategories.add(category);
+    });
     results.forEach((element) {
       var reminder = Reminder.fromMap(element);
       reminderTimes.add(reminder);
@@ -100,7 +108,6 @@ class _SettingScreenState extends State<SettingScreen> {
       );
   }
 
-
   void onReminderTimeChange(Reminder time) {
     helper.setSelectedForReminder(time, 1);
     reminderTimes.where((element) {
@@ -114,6 +121,120 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Future<void> addCustomCategory(String name) async {
+    Categories category= Categories(name: name, image: otherImage, isHidden: 0, isAll: 0, isFav: 0);
+    var result = await helper.addCategory(category);
+    setState(() {
+      category.id = result;
+      allCategories.add(category);
+    });
+  }
+
+  void openCategoryListDialog(BuildContext context) {
+    var obj = LocalizationManager.of(context);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ListView.builder(itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return Column(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              openCategoryAdder();
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 20,
+                                  child: Icon(Icons.add)
+                                ),
+                                const SizedBox(width: 10,),
+                                Text(obj.getTranslatedValue("add_category"), overflow: TextOverflow.ellipsis, maxLines: 2,)
+                              ],
+                            ),
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage: AssetImage(allCategories[index - 1].image),
+                              ),
+                              const SizedBox(width: 10,),
+                              Text(allCategories[index - 1].name, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                            ],
+                          ),
+                          Divider()
+                        ],
+                      );
+                    }
+                  },
+                    itemCount: allCategories.length + 1,
+                  )
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  void openCategoryAdder() {
+    var obj = LocalizationManager.of(context);
+      showDialog(context: context,
+        child: AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new TextField(
+                  controller: textCategoryController,
+                  autofocus: true,
+                  decoration: new InputDecoration(
+                      labelText: obj.getTranslatedValue("category_label"), hintText: obj.getTranslatedValue("category_hint")),
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                child: Text('${obj.getTranslatedValue("cancel_text")}'),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            new FlatButton(
+                child: Text(obj.getTranslatedValue("add_text")),
+                onPressed: () {
+                  addCustomCategory(textCategoryController.text.trim()).then((value) {
+                    Navigator.pop(context);
+                  });
+                })
+          ],
+        )
+      );
+  }
+
   getData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -121,9 +242,91 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Widget darkTheme() {
+    var obj = LocalizationManager.of(context);
+    return Semantics(
+      label: obj.getTranslatedValue("dark_theme_talkback"),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(obj.getTranslatedValue("dark_theme"), style: Theme.of(context).textTheme.bodyText1,),
+          Tooltip(
+            message: obj.getTranslatedValue("dark_theme_msg_talkback"),
+            child: Switch(
+              activeColor: Theme.of(context).primaryColor,
+              value: isDarkTheme,
+              onChanged: (isOn) {
+                setState(() {
+                  isDarkTheme = isOn;
+                  MyApp.setTheme(context, isDarkTheme ? ThemeMode.dark : ThemeMode.light);
+                });
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget selectLanguage() {
+    var obj = LocalizationManager.of(context);
+    return InkWell(
+      onTap: () {
+        openLanguageSelectionDialog(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          gradient: LinearGradient(
+              colors: [Colors.greenAccent, Colors.black12],
+              begin: Alignment.centerLeft,
+              end: Alignment.bottomRight
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(child: Text("${obj.getTranslatedValue("select_language")} (${selectedLanguage.name})", style: Theme.of(context).textTheme.bodyText1,)),
+            Icon(Icons.keyboard_arrow_down)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget categoryList() {
+    var obj = LocalizationManager.of(context);
+    return InkWell(
+      onTap: () {
+          openCategoryListDialog(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          gradient: LinearGradient(
+              colors: [Colors.red, Colors.black12],
+              begin: Alignment.centerLeft,
+              end: Alignment.bottomRight
+          ),
+        ),
+        child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(child: Text("${obj.getTranslatedValue("category_string")}", style: Theme.of(context).textTheme.bodyText1,)),
+          Icon(Icons.keyboard_arrow_down)
+        ],
+      ),
+      ),
+    );
+  }
+
   @override
   void initState() {
-    fetchReminderTimes();
+    fetchFromDatabase();
     getData();
     getSelectedLanguage();
     super.initState();
@@ -237,53 +440,10 @@ class _SettingScreenState extends State<SettingScreen> {
                       end: Alignment.bottomRight
                   ),
                 ),
-                child: Semantics(
-                  label: obj.getTranslatedValue("dark_theme_talkback"),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(obj.getTranslatedValue("dark_theme"), style: Theme.of(context).textTheme.bodyText1,),
-                      Tooltip(
-                        message: obj.getTranslatedValue("dark_theme_msg_talkback"),
-                        child: Switch(
-                          activeColor: Theme.of(context).primaryColor,
-                          value: isDarkTheme,
-                          onChanged: (isOn) {
-                            setState(() {
-                              isDarkTheme = isOn;
-                              MyApp.setTheme(context, isDarkTheme ? ThemeMode.dark : ThemeMode.light);
-                            });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                child: darkTheme(),
               ),
-              InkWell(
-                onTap: () {
-                  openLanguageSelectionDialog(context);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    gradient: LinearGradient(
-                        colors: [Colors.greenAccent, Colors.black12],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.bottomRight
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(child: Text("${obj.getTranslatedValue("select_language")} (${selectedLanguage.name})", style: Theme.of(context).textTheme.bodyText1,)),
-                      Icon(Icons.keyboard_arrow_down)
-                    ],
-                  ),
-                ),
-              ),
+              selectLanguage(),
+              categoryList(),
             ],
           ),
         ),

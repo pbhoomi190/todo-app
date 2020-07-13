@@ -68,5 +68,10 @@
   "reminder_msg_talkback" : "Turn on or off the reminder",
   "category_item_talkback" : "Category item",
   "category_hint_talkback" : "Double tap to show list. Scroll left with two fingers to scroll through the list",
-  "swipe_option_talkback" : "Double tap to edit. Swipe left with two fingers to enable more options on item"
+  "swipe_option_talkback" : "Double tap to edit. Swipe left with two fingers to enable more options on item",
+  "add_category" : "Add Category",
+  "add_text" : "ADD",
+  "cancel_text" : "CANCEL",
+  "category_hint" : "eg. Workout",
+  "category_label" : "Category Name"
 }

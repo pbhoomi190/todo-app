@@ -162,6 +162,7 @@ class DatabaseHelper {
   Future<int> addCategory(Categories category) async {
     Database db = await this.database;
     var result = await db.insert(categoryTable, category.toMap());
+    debugPrint("category add result ====> $result");
     return result;
   }
 

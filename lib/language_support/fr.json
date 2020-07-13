@@ -68,5 +68,10 @@
   "reminder_msg_talkback" : "Activer ou désactiver le rappel",
   "category_item_talkback" : "Élément de catégorie",
   "category_hint_talkback" : "Appuyez deux fois pour afficher la liste. Faites défiler vers la gauche avec deux doigts pour faire défiler la liste",
-  "swipe_option_talkback" : "Appuyez deux fois pour modifier. Glissez vers la gauche avec deux doigts pour activer plus d'options sur l'élément"
+  "swipe_option_talkback" : "Appuyez deux fois pour modifier. Glissez vers la gauche avec deux doigts pour activer plus d'options sur l'élément",
+  "add_category" : "ajouter une catégorie",
+  "add_text" : "AJOUTER",
+  "cancel_text" : "ANNULER",
+  "category_hint" : "par exemple. Faire des exercices",
+  "category_label" : "Nom de catégorie"
 }
