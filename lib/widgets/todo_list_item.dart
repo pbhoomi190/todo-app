@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
@@ -62,7 +63,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
                 children: <Widget>[
                   const SizedBox(width: 8,),
                   CircleAvatar(
-                    backgroundImage: AssetImage(itemToDo.category.categoryImage()),
+                    backgroundImage: AssetImage(allImage), //itemToDo.category
                   ),
                   const SizedBox(width: 16,),
                   Expanded(

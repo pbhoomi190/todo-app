@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/database/ToDo.dart';
+import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,6 +58,13 @@ extension dateToInt on DateTime {
 }
 
 extension intToDates on int {
+
+    Future<Categories> getCategoryForId() async {
+      DatabaseHelper helper = DatabaseHelper();
+      var category = await helper.fetchCategoryForId(this);
+      return category;
+    }
+
     Future<String> dateString() async {
       var dateTime = DateTime.fromMillisecondsSinceEpoch(this);
       var dateStr = await dateTime.formattedDateString();

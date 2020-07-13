@@ -100,7 +100,7 @@ class ToDo {
   @required String title;
   @required String description;
   @required int date;
-  @required String category;
+  @required int category;
   @required int isReminderOn = 1;
   int isFavourite = 0;
   int isCompleted = 0;

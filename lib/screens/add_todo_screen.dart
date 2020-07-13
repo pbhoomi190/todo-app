@@ -22,7 +22,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   TextEditingController descController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
-  CategoryType selectedCategory;
+  Categories selectedCategory;
   String title = "";
   String desc = "";
   String cat = "";
@@ -30,6 +30,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   bool isValid = false;
   int dateInt;
   bool isReminder = false;
+  List<Categories> categories = [];
   DatabaseHelper helper = DatabaseHelper();
 
   void showSnackBar(String message) {
@@ -37,10 +38,10 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  void setCategory(CategoryType categoryType) {
+  void setCategory(Categories categoryType) {
     setState(() {
       selectedCategory = categoryType;
-      categoryController.text = selectedCategory.getString();
+      categoryController.text = selectedCategory.name;
     });
   }
 
@@ -58,7 +59,12 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
       }
   }
 
-  void addListenersToTextField() {
+  Future<void> initialSetup() async {
+      var results = await helper.fetchCategories();
+      results.forEach((element) {
+        var category = Categories.fromMap(element);
+        categories.add(category);
+      });
       titleController.addListener(() {
           title = titleController.text;
           validate();
@@ -102,7 +108,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   }
 
   void openCategoryPicker(BuildContext context) {
-    final arrayCateggory = Category.getCategories();
+    final arrayCateggory = categories.length == 0 ? Categories.getDefaultCategories() : categories;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -135,7 +141,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                             return InkWell(
                               onTap: () {
                                     Navigator.of(context).pop();
-                                    setCategory( arrayCateggory[index].type);
+                                    setCategory(arrayCateggory[index]);
                               },
                               child: Card(
                                 child: Column(
@@ -146,7 +152,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                                       backgroundImage: AssetImage(arrayCateggory[index].image),
                                     ),
                                     const SizedBox(height: 10,),
-                                    Text(arrayCateggory[index].title, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                                    Text(arrayCateggory[index].name, overflow: TextOverflow.ellipsis, maxLines: 2,)
                                   ],
                                 ),
                               ),
@@ -165,7 +171,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void addToDoItem() async {
     var obj = LocalizationManager.of(context);
-    ToDo toDo = ToDo(title: title, description: desc, date: dateInt, category: selectedCategory.getString(), isReminderOn: isReminder ? 1 : 0);
+    ToDo toDo = ToDo(title: title, description: desc, date: dateInt, category: selectedCategory.id, isReminderOn: isReminder ? 1 : 0);
     var result = await helper.createToDoListItem(toDo);
     if (result == 0) {
       showSnackBar(obj.getTranslatedValue("create_error_msg"));
@@ -177,7 +183,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   @override
   void initState() {
-    addListenersToTextField();
+    initialSetup();
     super.initState();
   }
 

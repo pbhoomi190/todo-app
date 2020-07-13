@@ -23,7 +23,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   TextEditingController categoryController;
   TextEditingController descController;
   TextEditingController dateController;
-  CategoryType selectedCategory;
+  Categories selectedCategory;
   String title = "";
   String desc = "";
   String cat = "";
@@ -33,6 +33,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   DatabaseHelper helper = DatabaseHelper();
   ToDo editToDo;
   bool isFromComplete = false;
+  List<Categories> categories = [];
 
   // Database update methods
 
@@ -54,23 +55,23 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   }
 
   Future<void> reAddToDo() async {
-    ToDo toDo = ToDo(title: title, description: desc, date: editToDo.date, category: selectedCategory.getString());
+    ToDo toDo = ToDo(title: title, description: desc, date: editToDo.date, category: selectedCategory.id);
     await helper.createToDoListItem(toDo).then((value) {
       Navigator.of(context).pop();
     });
   }
 
-  void setCategory(CategoryType categoryType) {
+  void setCategory(Categories categoryType) {
     setState(() {
       selectedCategory = categoryType;
-      categoryController.text = selectedCategory.getString();
+      categoryController.text = selectedCategory.name;
     });
   }
 
   void validate() {
     editToDo.title = title.trim();
     editToDo.description = desc.trim();
-    editToDo.category = cat.trim();
+    editToDo.category = selectedCategory.id;
     if (title.trim().isNotEmpty && desc.trim().isNotEmpty && cat.trim().isNotEmpty && date.trim().isNotEmpty) {
       setState(() {
         isValid = true;
@@ -84,7 +85,23 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     }
   }
 
-  void addListenersToTextField() {
+  Future<void> initialSetup() async {
+    editToDo = widget.toDo;
+    selectedCategory = await widget.toDo.category.getCategoryForId();
+    isFromComplete = widget.isFromCompleted == null ? false : widget.isFromCompleted;
+    if (isFromComplete == false) {
+      getDate();
+    }
+    titleController = TextEditingController(text: widget.toDo.title);
+    descController = TextEditingController(text: widget.toDo.description);
+    dateController = TextEditingController(text: "");
+    categoryController = TextEditingController(text: selectedCategory.name);
+    isReminder = widget.toDo.isReminderOn == 0 ? false : true;
+    var results = await helper.fetchCategories();
+    results.forEach((element) {
+      var category = Categories.fromMap(element);
+      categories.add(category);
+    });
     title = titleController.text;
     desc = descController.text;
     cat = categoryController.text;
@@ -134,7 +151,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   }
 
   void openCategoryPicker(BuildContext context) {
-    final arrayCateggory = Category.getCategories();
+    final arrayCateggory = categories.length == 0 ? Categories.getDefaultCategories() : categories;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -166,7 +183,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).pop();
-                              setCategory( arrayCateggory[index].type);
+                              setCategory( arrayCateggory[index]);
                             },
                             child: Card(
                               child: Column(
@@ -177,7 +194,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                                     backgroundImage: AssetImage(arrayCateggory[index].image),
                                   ),
                                   const SizedBox(height: 10,),
-                                  Text(arrayCateggory[index].title, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                                  Text(arrayCateggory[index].name, overflow: TextOverflow.ellipsis, maxLines: 2,)
                                 ],
                               ),
                             ),
@@ -205,18 +222,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
 
   @override
   void initState() {
-    editToDo = widget.toDo;
-    selectedCategory = widget.toDo.category.categoryType();
-    isFromComplete = widget.isFromCompleted == null ? false : widget.isFromCompleted;
-    if (isFromComplete == false) {
-      getDate();
-    }
-    titleController = TextEditingController(text: widget.toDo.title);
-    descController = TextEditingController(text: widget.toDo.description);
-    dateController = TextEditingController(text: "");
-    categoryController = TextEditingController(text: widget.toDo.category);
-    isReminder = widget.toDo.isReminderOn == 0 ? false : true;
-    addListenersToTextField();
+    initialSetup();
     super.initState();
   }
 

@@ -68,9 +68,6 @@ class DatabaseHelper {
         '$reminderColSelected INTEGER)'
     ).then((value) {
       addCategoryAndReminder();
-//      Reminder.getAllReminder().forEach((element) {
-//        addReminder(element);
-//      });
     });
   }
 
@@ -96,28 +93,6 @@ class DatabaseHelper {
         var resultId = await txn.insert(reminderTable, element.toMap());
         debugPrint("Reminder Result id=======> $resultId");
       });
-    });
-  }
-
-  // Add categories
-  addCategory(Categories categories) async {
-    debugPrint("Category to add:- ${categories.toMap()}");
-    Database db = await this.database;
-    await db.transaction((txn) async {
-      var resultId = await txn.insert(categoryTable, categories.toMap());
-
-      debugPrint("Categories Result id=======> $resultId");
-    });
-  }
-
-
-  // Add new reminder
-   addReminder(Reminder reminder, List<Categories> array) async {
-    debugPrint("Reminder to add:- ${reminder.toMap()}");
-    Database db = await this.database;
-    await db.transaction((txn) async {
-      var resultId = await txn.insert(reminderTable, reminder.toMap());
-      debugPrint("Reminder Result id=======> $resultId");
     });
   }
 
@@ -166,6 +141,27 @@ class DatabaseHelper {
       manager.removeReminder(reminder.id);
       manager.setReminder(todo, reminder.id, time);
     });
+  }
+
+  // Fetch categories
+  Future<List<Map<String, dynamic>>> fetchCategories() async {
+    Database db = await this.database;
+    var categories = await db.query(categoryTable);
+    return categories;
+  }
+
+  // Add category
+  Future<int> addCategory(Categories category) async {
+    Database db = await this.database;
+    var result = await db.insert(categoryTable, category.toMap());
+    return result;
+  }
+
+  Future<Categories> fetchCategoryForId(int id) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('SELECT * FROM $categoryTable WHERE $categoryColId == $id');
+    Categories categories = Categories.fromMap(result.first);
+    return categories;
   }
 
   // Add To-Do item
