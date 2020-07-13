@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertododemo/constants/category.dart';
+import 'package:fluttertododemo/database/ToDo.dart';
 
 class CategoryInheritedWidget extends InheritedWidget {
-  final CategoryType categoryType;
+  final Categories categoryType;
 
   CategoryInheritedWidget({this.categoryType, Widget child}) : super(child: child);
 

@@ -5,6 +5,9 @@ final String categoryTable = "category_table";
 final String categoryColId = "category_id";
 final String categoryColName = "category_name";
 final String categoryColImage = "category_image";
+final String categoryColHidden = "category_hidden";
+final String categoryColAll = "category_all";
+final String categoryColFav = "category_fav";
 final String categoryConstraint ="fk_categories";
 
 // To-Do table
@@ -13,7 +16,6 @@ final String colId = 'id';
 final String colTitle = 'title';
 final String colDescription = 'description';
 final String colDate = "date";
-final String colCategory = "category";
 final String colReminder = "isReminderOn";
 final String colFavourite = "isFavourite";
 final String colCompleted = "isCompleted";
@@ -30,17 +32,22 @@ class Categories {
   int id;
   @required String name;
   @required String image;
+  int isHidden = 0;
+  int isAll = 0;
+  int isFav = 0;
 
-  Categories({this.id, this.name, this.image});
+  Categories({this.id, this.name, this.image, this.isHidden, this.isAll, this.isFav});
 
   static List<Categories> getDefaultCategories() {
     return [
-      Categories(name: "Shopping", image: "assets/images/shopping.jpg"),
-      Categories(name: "Event", image: "assets/images/event.png"),
-      Categories(name: "Meeting", image: "assets/images/meeting.jpg"),
-      Categories(name: "Work", image: "assets/images/work.png"),
-      Categories(name: "Trip", image: "assets/images/trip.png"),
-      Categories(name: "Other", image: "assets/images/todo.png"),
+      Categories(name: "Show All", image: "assets/images/all.png", isHidden: 1, isAll: 1, isFav: 0),
+      Categories(name: "Favorites", image: "assets/images/fav.png" , isHidden: 1, isAll: 0, isFav: 1),
+      Categories(name: "Shopping", image: "assets/images/shopping.jpg", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Event", image: "assets/images/event.png", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Meeting", image: "assets/images/meeting.jpg", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Work", image: "assets/images/work.png", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Trip", image: "assets/images/trip.png", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Other", image: "assets/images/todo.png", isHidden: 0, isFav: 0, isAll: 0),
     ];
   }
 
@@ -49,6 +56,9 @@ class Categories {
       categoryColId: id,
       categoryColName: name,
       categoryColImage: image,
+      categoryColHidden : isHidden,
+      categoryColAll: isAll,
+      categoryColFav: isFav
     };
     return map;
   }
@@ -57,6 +67,9 @@ class Categories {
     id = map[categoryColId];
     name = map[categoryColName];
     image = map[categoryColImage];
+    isAll = map[categoryColAll];
+    isFav = map[categoryColFav];
+    isHidden = map[categoryColHidden];
   }
 }
 
@@ -113,7 +126,7 @@ class ToDo {
       colTitle: title,
       colDescription: description,
       colDate: date,
-      colCategory: category,
+      categoryColId: category,
       colReminder: isReminderOn,
       colFavourite: isFavourite,
       colCompleted: isCompleted
@@ -126,7 +139,7 @@ class ToDo {
     title = map[colTitle];
     description = map[colDescription];
     date = map[colDate];
-    category = map[colCategory];
+    category = map[categoryColId];
     isReminderOn = map[colReminder];
     isFavourite = map[colFavourite];
     isCompleted = map[colCompleted];

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/page_transition_type.dart';
-import 'package:fluttertododemo/constants/category.dart';
-import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
@@ -25,7 +23,8 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   DatabaseHelper helper = DatabaseHelper();
   List<ToDo> filteredToDo = [];
   List<ToDo> allToDo = [];
-  CategoryType selectedCategory = CategoryType.all;
+  Categories selectedCategory;
+  List<Categories> categories = [];
 
   void showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message),);
@@ -33,6 +32,12 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   }
 
   void fetchAllToDoItems() async {
+    var category = await helper.fetchCategories(showHidden: true); // also show fav and all
+    category.forEach((element) {
+      var category = Categories.fromMap(element);
+      categories.add(category);
+    });
+    selectedCategory = categories.first;
     var results = await helper.fetchToDoList();
     print(results);
     results.forEach((element) {
@@ -69,7 +74,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     });
   }
 
-  void reloadData(CategoryType category) {
+  void reloadData(Categories category) {
     filteredToDo.forEach((element) {
       debugPrint("${element.toMap()}");
     });
@@ -105,54 +110,20 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     );
   }
 
-  void filterItemsWithCategory(CategoryType category) {
-    switch (category) {
-      case CategoryType.all:
-        filteredToDo = allToDo;
-        reloadData(category);
-        break;
-      case CategoryType.favorites:
-        filteredToDo = allToDo.where((element) {
-          return element.isFavourite == 1;
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.shopping:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.shopping.getString();
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.event:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.event.getString();
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.work:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.work.getString();
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.trip:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.trip.getString();
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.other:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.other.getString();
-        }).toList();
-        reloadData(category);
-        break;
-      case CategoryType.meeting:
-        filteredToDo = allToDo.where((element) {
-          return element.category == CategoryType.meeting.getString();
-        }).toList();
-        reloadData(category);
-        break;
+  void filterItemsWithCategory(Categories category) {
+    if (category.isAll == 1) {
+      filteredToDo = allToDo;
+      reloadData(category);
+    } else if (category.isFav == 1) {
+      filteredToDo = allToDo.where((element) {
+        return element.isFavourite == 1;
+      }).toList();
+      reloadData(category);
+    } else {
+      filteredToDo = allToDo.where((element) {
+        return element.category == category.id;
+      }).toList();
+      reloadData(category);
     }
   }
 
@@ -208,7 +179,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                   width: size.width,
                   alignment: Alignment.topCenter,
                   height: closeCategories ? 0 : 175,
-                  child: HorizontalCategoryScrollView(onCategoryChange: (category) {
+                  child: HorizontalCategoryScrollView(categories: categories, onCategoryChange: (category) {
                         filterItemsWithCategory(category);
                   },)
               ),
@@ -237,15 +208,6 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                             actionPane: SlidableDrawerActionPane(),
                             actionExtentRatio: 0.2,
                             secondaryActions: <Widget>[
-                             /* IconSlideAction(
-                                caption: obj.getTranslatedValue("edit_slide_button"),
-                                color: Theme.of(context).primaryColorLight,
-                                icon: Icons.edit,
-                                onTap: () {
-                                  print("Edit");
-                                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: filteredToDo[index],), type: PageTransitionType.slideLeft));
-                                },
-                              ),*/
                               IconSlideAction(
                                 caption: obj.getTranslatedValue("complete_slide_button"),
                                 color: Theme.of(context).primaryColor,
@@ -281,10 +243,11 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   }
 }
 
-typedef void CategoryCallback(CategoryType type);
+typedef void CategoryCallback(Categories type);
 class HorizontalCategoryScrollView extends StatefulWidget {
   final CategoryCallback onCategoryChange;
-  HorizontalCategoryScrollView({this.onCategoryChange});
+  final List<Categories> categories;
+  HorizontalCategoryScrollView({this.onCategoryChange, this.categories});
 
   @override
   _HorizontalCategoryScrollViewState createState() => _HorizontalCategoryScrollViewState();
@@ -293,43 +256,47 @@ class HorizontalCategoryScrollView extends StatefulWidget {
 class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollView> {
 
   bool isDark = false;
+  DatabaseHelper helper = DatabaseHelper();
+  List<Categories> categories = [];
 
-  getTheme() async {
+  initialSetup() async {
+    categories = widget.categories;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isDark = prefs.getBool('isDark') ?? false;
     });
   }
 
-  Widget itemCard(String title, String image, CategoryType type) {
+  Widget itemCard(Categories category) {
 
     final selectedCategory = CategoryInheritedWidget.of(context).categoryType;
     var obj = LocalizationManager.of(context);
+    debugPrint("category image =========> ${category.image}");
     return Semantics(
-      label: "${obj.getTranslatedValue("category_item_talkback")} $title",
+      label: "${obj.getTranslatedValue("category_item_talkback")} ${category.name}",
       hint:  obj.getTranslatedValue("category_hint_talkback"),
-      value: title,
-      selected: selectedCategory == type ? true : false,
+      value: category.name,
+      selected: selectedCategory == category ? true : false,
       container: true,
       excludeSemantics: true,
       child: InkWell(
         onTap: () {
-          widget.onCategoryChange(type);
+          widget.onCategoryChange(category);
         },
         child: Container(
           width: 150,
           height: 175,
           child: Card(
-            color: selectedCategory == type ? (isDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight) : (isDark ? Theme.of(context).primaryColorLight : Colors.white) ,
+            color: selectedCategory == category ? (isDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight) : (isDark ? Theme.of(context).primaryColorLight : Colors.white) ,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage(image),
+                  backgroundImage: AssetImage(category.image),
                 ),
                 const SizedBox(height: 10,),
-                Text(title, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                Text(category.name, overflow: TextOverflow.ellipsis, maxLines: 2,)
               ],
             ),
           ),
@@ -340,25 +307,16 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
 
   @override
   void initState() {
-    getTheme();
+    initialSetup();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var obj = LocalizationManager.of(context);
-    return ListView(
+    return ListView.builder(itemBuilder: (context, index) {
+     return itemCard(categories[index]);
+    }, itemCount: categories.length > 0 ? categories.length : 0,
       scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        itemCard(obj.getTranslatedValue("show_all"), allImage, CategoryType.all),
-        itemCard(obj.getTranslatedValue("favorites"), favImage, CategoryType.favorites),
-        itemCard(obj.getTranslatedValue("shopping"), shoppingImage, CategoryType.shopping),
-        itemCard(obj.getTranslatedValue("event"), eventImage, CategoryType.event),
-        itemCard(obj.getTranslatedValue("trip"), tripImage, CategoryType.trip),
-        itemCard(obj.getTranslatedValue("work"), workImage, CategoryType.work),
-        itemCard(obj.getTranslatedValue("meeting"), meetingImage, CategoryType.meeting),
-        itemCard(obj.getTranslatedValue("other"), otherImage, CategoryType.other),
-      ],
     );
   }
 }

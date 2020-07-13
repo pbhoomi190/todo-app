@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_page_transition/page_transition_type.dart';
-import 'package:fluttertododemo/constants/category.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/todo_list_screen.dart';
@@ -63,7 +62,9 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
       var results = await helper.fetchCategories();
       results.forEach((element) {
         var category = Categories.fromMap(element);
-        categories.add(category);
+        setState(() {
+          categories.add(category);
+        });
       });
       titleController.addListener(() {
           title = titleController.text;
@@ -109,6 +110,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void openCategoryPicker(BuildContext context) {
     final arrayCateggory = categories.length == 0 ? Categories.getDefaultCategories() : categories;
+    print(categories.length);
     showDialog(
         context: context,
         builder: (BuildContext context) {

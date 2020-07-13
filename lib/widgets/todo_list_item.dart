@@ -23,6 +23,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
   bool isFav = false;
   ToDo itemToDo;
   String dateString = "";
+  String image = allImage;
 
   manageFavourite() async {
       var result = await helper.markFavouriteToDoItem(itemToDo, isFav ? 1 : 0);
@@ -34,7 +35,9 @@ class _ToDoListItemState extends State<ToDoListItem> {
 
   getDate() async {
     var date = await itemToDo.date.dateString();
+    var cat = await itemToDo.category.getCategoryForId();
     setState(() {
+      image = cat.image;
       dateString = date;
     });
   }
@@ -63,7 +66,7 @@ class _ToDoListItemState extends State<ToDoListItem> {
                 children: <Widget>[
                   const SizedBox(width: 8,),
                   CircleAvatar(
-                    backgroundImage: AssetImage(allImage), //itemToDo.category
+                    backgroundImage: AssetImage(image), //itemToDo.category
                   ),
                   const SizedBox(width: 16,),
                   Expanded(

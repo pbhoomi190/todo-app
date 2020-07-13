@@ -45,7 +45,10 @@ class DatabaseHelper {
     await db.execute('CREATE TABLE $categoryTable('
         '$categoryColId INTEGER PRIMARY KEY AUTOINCREMENT, '
         '$categoryColName TEXT, '
-        '$categoryColImage TEXT)'
+        '$categoryColImage TEXT, '
+        '$categoryColHidden INTEGER, '
+        '$categoryColAll INTEGER, '
+        '$categoryColFav INTEGER)'
     );
 
     await db.execute('CREATE TABLE $tableName('
@@ -53,11 +56,10 @@ class DatabaseHelper {
         '$colTitle TEXT, '
         '$colDescription TEXT, '
         '$colDate INTEGER, '
-        '$colCategory TEXT, '
+        '$categoryColId INTEGER, '
         '$colReminder INTEGER, '
         '$colFavourite INTEGER, '
         '$colCompleted INTEGER, '
-        '$categoryColId INTEGER, '
         'FOREIGN KEY ($categoryColId) REFERENCES $categoryTable($categoryColId))'
     );
 
@@ -144,10 +146,16 @@ class DatabaseHelper {
   }
 
   // Fetch categories
-  Future<List<Map<String, dynamic>>> fetchCategories() async {
+  Future<List<Map<String, dynamic>>> fetchCategories({bool showHidden = false}) async {
     Database db = await this.database;
-    var categories = await db.query(categoryTable);
-    return categories;
+    if (showHidden) {
+      var categories = await db.query(categoryTable);
+      return categories;
+    } else {
+      var categories = await db.query(categoryTable, where: '$categoryColHidden == 0');
+      print("fhfghfgahfgfhsgfhfgsf ${categories.length}");
+      return categories;
+    }
   }
 
   // Add category
@@ -230,7 +238,7 @@ class DatabaseHelper {
       var result = await db.rawQuery('UPDATE $tableName '
           'SET  $colTitle = "${todo.title}",'
           '$colDescription = "${todo.description}",'
-          '$colCategory = "${todo.category}",'
+          '$categoryColId = "${todo.category}",'
           '$colDate = "${todo.date}",'
           '$colReminder = ${todo.isReminderOn}, '
           '$colFavourite = ${todo.isFavourite} '
