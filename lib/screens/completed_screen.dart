@@ -144,7 +144,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
               },
             ),
             ],
-            child: ToDoListItem(toDo: completed[index], key: UniqueKey(), onFavClick: () {},)
+            child: ToDoListItem(toDo: completed[index], key: UniqueKey(), onFavClick: () {}, onEditClick: () {},)
         );
       },
         itemCount: completed != null && completed.length > 0 ? completed.length : 0,
