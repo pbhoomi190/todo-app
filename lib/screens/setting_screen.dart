@@ -210,6 +210,7 @@ class _SettingScreenState extends State<SettingScreen> {
               new Expanded(
                 child: new TextField(
                   controller: textCategoryController,
+                  maxLength: 20,
                   autofocus: true,
                   decoration: new InputDecoration(
                       labelText: obj.getTranslatedValue("category_label"), hintText: obj.getTranslatedValue("category_hint")),
@@ -221,12 +222,14 @@ class _SettingScreenState extends State<SettingScreen> {
             new FlatButton(
                 child: Text('${obj.getTranslatedValue("cancel_text")}'),
                 onPressed: () {
+                  textCategoryController.text = "";
                   Navigator.pop(context);
                 }),
             new FlatButton(
                 child: Text(obj.getTranslatedValue("add_text")),
                 onPressed: () {
                   addCustomCategory(textCategoryController.text.trim()).then((value) {
+                    textCategoryController.text = "";
                     Navigator.pop(context);
                   });
                 })

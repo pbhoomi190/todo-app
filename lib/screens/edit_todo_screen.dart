@@ -194,7 +194,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                                     backgroundImage: AssetImage(arrayCateggory[index].image),
                                   ),
                                   const SizedBox(height: 10,),
-                                  Text(arrayCateggory[index].name, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                                  Text(arrayCateggory[index].name, overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.center,)
                                 ],
                               ),
                             ),

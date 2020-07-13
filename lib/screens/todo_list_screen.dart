@@ -296,7 +296,7 @@ class _HorizontalCategoryScrollViewState extends State<HorizontalCategoryScrollV
                   backgroundImage: AssetImage(category.image),
                 ),
                 const SizedBox(height: 10,),
-                Text(category.name, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                Text(category.name, overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.center,)
               ],
             ),
           ),
