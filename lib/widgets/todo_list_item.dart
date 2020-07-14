@@ -34,12 +34,20 @@ class _ToDoListItemState extends State<ToDoListItem> {
   }
 
   getDate() async {
-    var date = await itemToDo.date.dateString();
+    if (itemToDo.date != 0) {
+      var date = await itemToDo.date.dateString();
+      if (mounted) {
+        setState(() {
+          dateString = date;
+        });
+      }
+    }
     var cat = await itemToDo.category.getCategoryForId();
-    setState(() {
-      image = cat.image;
-      dateString = date;
-    });
+    if (mounted) {
+      setState(() {
+        image = cat.image;
+      });
+    }
   }
 
   @override

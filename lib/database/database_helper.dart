@@ -190,7 +190,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> fetchToDoList() async {
     Database db = await this.database;
     int today = DateTime.now().millisecondsSinceEpoch;
-    var result = await db.query(tableName, where: '$colDate > $today AND $colCompleted = 0');
+    var result = await db.query(tableName, where: '$colDate > $today AND $colCompleted = 0 OR $colDate == 0');
     return result;
   }
 
@@ -272,7 +272,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getCompletedToDo() async {
     int today = DateTime.now().millisecondsSinceEpoch;
     Database db = await this.database;
-    var result = await db.query(tableName, where: '$colDate < $today OR $colCompleted = 1');
+    var result = await db.query(tableName, where: '($colDate < $today OR $colCompleted = 1) AND $colDate != 0');
     return result;
   }
 

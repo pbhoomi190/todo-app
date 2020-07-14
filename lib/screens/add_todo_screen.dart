@@ -27,8 +27,9 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   String cat = "";
   String date = "";
   bool isValid = false;
-  int dateInt;
+  int dateInt = 0;
   bool isReminder = false;
+  bool canReminderEnable = false;
   List<Categories> categories = [];
   DatabaseHelper helper = DatabaseHelper();
 
@@ -45,7 +46,18 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   }
 
   void validate() {
-      if (title.trim().isNotEmpty && desc.trim().isNotEmpty && cat.trim().isNotEmpty && date.trim().isNotEmpty) {
+      if (date.trim().isNotEmpty) {
+        setState(() {
+          canReminderEnable = true;
+       });
+      } else {
+        if (canReminderEnable == true) {
+        setState(() {
+          canReminderEnable = false;
+        });
+      }
+     }
+      if (title.trim().isNotEmpty && desc.trim().isNotEmpty && cat.trim().isNotEmpty) {
         setState(() {
           isValid = true;
         });
@@ -56,6 +68,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
           });
         }
       }
+
   }
 
   Future<void> initialSetup() async {
@@ -297,10 +310,12 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                           child: Switch(
                             value: isReminder,
                             onChanged: (value) {
-                              setState(() {
-                                isReminder = value;
-                                print("Reminder value ==== $value");
-                              });
+                              if (canReminderEnable) {
+                                setState(() {
+                                  isReminder = value;
+                                  print("Reminder value ==== $value");
+                                });
+                              }
                             },
                           ),
                         )

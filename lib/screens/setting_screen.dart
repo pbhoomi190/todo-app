@@ -23,6 +23,7 @@ class _SettingScreenState extends State<SettingScreen> {
   List<Categories> allCategories = [];
   Language selectedLanguage = Language.listOfLanguage().first;
   TextEditingController textCategoryController = TextEditingController(text: "");
+  bool enableAddCategory = false;
 
   void changeLanguage(Language language) {
     print(language.languageCode);
@@ -219,15 +220,15 @@ class _SettingScreenState extends State<SettingScreen> {
             ],
           ),
           actions: <Widget>[
-            new FlatButton(
+             FlatButton(
                 child: Text('${obj.getTranslatedValue("cancel_text")}'),
                 onPressed: () {
                   textCategoryController.text = "";
                   Navigator.pop(context);
                 }),
-            new FlatButton(
+             FlatButton(
                 child: Text(obj.getTranslatedValue("add_text")),
-                onPressed: () {
+                onPressed: enableAddCategory == false ? null : (){
                   addCustomCategory(textCategoryController.text.trim()).then((value) {
                     textCategoryController.text = "";
                     Navigator.pop(context);
@@ -242,6 +243,11 @@ class _SettingScreenState extends State<SettingScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isDarkTheme = prefs.getBool('isDark') ?? false;
+    });
+    textCategoryController.addListener(() {
+      setState(() {
+        enableAddCategory = textCategoryController.text.trim().isEmpty ? false : true;
+      });
     });
   }
 

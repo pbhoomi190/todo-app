@@ -30,6 +30,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   String date = "";
   bool isValid = false;
   bool isReminder = true;
+  bool canReminderEnable = false;
   DatabaseHelper helper = DatabaseHelper();
   ToDo editToDo;
   bool isFromComplete = false;
@@ -37,7 +38,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
 
   // Database update methods
 
-  void updateReminder(bool isOn) async{
+  void updateReminder(bool isOn) async {
     debugPrint("update reminder called");
       await helper.turnOnOffReminderToDoItem(editToDo, isOn ? 1 : 0);
       editToDo.isReminderOn =  isOn ? 1 : 0;
@@ -72,7 +73,18 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     editToDo.title = title.trim();
     editToDo.description = desc.trim();
     editToDo.category = selectedCategory.id;
-    if (title.trim().isNotEmpty && desc.trim().isNotEmpty && cat.trim().isNotEmpty && date.trim().isNotEmpty) {
+    if (date.trim().isNotEmpty) {
+      setState(() {
+        canReminderEnable = true;
+      });
+    } else {
+      if (canReminderEnable == true) {
+        setState(() {
+          canReminderEnable = false;
+        });
+      }
+    }
+    if (title.trim().isNotEmpty && desc.trim().isNotEmpty && cat.trim().isNotEmpty) {
       setState(() {
         isValid = true;
       });
@@ -335,7 +347,9 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                           child: Switch(
                             value: isReminder,
                             onChanged: (value) {
-                              updateReminder(value);
+                              if (canReminderEnable) {
+                                updateReminder(value);
+                              }
                             },
                           ),
                         )
