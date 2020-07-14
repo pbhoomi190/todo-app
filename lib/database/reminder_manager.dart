@@ -6,7 +6,7 @@ class ReminderManager {
 
   static ReminderManager _reminderManager;
   static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
-
+  static const int idAdder = 10000;
   ReminderManager._createInstance();
 
   factory ReminderManager() {
@@ -49,7 +49,13 @@ class ReminderManager {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     DateTime reminderBefore = toDo.date.dateFromInt().subtract(Duration(minutes: time));
-    await reminder.schedule(reminderId, toDo.title, "Time for your task: ${toDo.title}", reminderBefore, platformChannelSpecifics);
+    DateTime taskTime = toDo.date.dateFromInt();
+    int id = reminderId + idAdder;
+    await reminder.schedule(id, toDo.title, "Time for your task: ${toDo.title}", taskTime, platformChannelSpecifics);
+    await reminder.schedule(reminderId,
+        toDo.title, "You should start your task: ${toDo.title} in $time minutes.",
+        reminderBefore, platformChannelSpecifics);
+
   }
 
   Future onSelectNotification(String payload) async {
@@ -65,6 +71,7 @@ class ReminderManager {
 
   void removeReminder(int reminderID) {
     FlutterLocalNotificationsPlugin reminder = this.reminder;
+    reminder.cancel(idAdder - reminderID);
     reminder.cancel(reminderID);
   }
 
