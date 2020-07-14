@@ -53,12 +53,13 @@ class ReminderManager {
   }
 
   Future onSelectNotification(String payload) async {
-    print('Notification clicked');
+    print('on select notification called $payload');
     return Future.value(0);
   }
 
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
+    print('did receive local Notification clicked');
     return Future.value(1);
   }
 

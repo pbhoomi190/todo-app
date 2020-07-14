@@ -8,6 +8,7 @@ final String categoryColImage = "category_image";
 final String categoryColHidden = "category_hidden";
 final String categoryColAll = "category_all";
 final String categoryColFav = "category_fav";
+final String categoryColDefault = "category_default";
 final String categoryConstraint ="fk_categories";
 
 // To-Do table
@@ -32,22 +33,23 @@ class Categories {
   int id;
   @required String name;
   @required String image;
-  int isHidden = 0;
-  int isAll = 0;
-  int isFav = 0;
+  @required int isHidden = 0;
+  @required int isAll = 0;
+  @required int isFav = 0;
+  @required int isDefault = 0;
 
-  Categories({this.id, this.name, this.image, this.isHidden, this.isAll, this.isFav});
+  Categories({this.id, this.name, this.image, this.isHidden, this.isAll, this.isFav, this.isDefault});
 
   static List<Categories> getDefaultCategories() {
     return [
-      Categories(name: "Show All", image: "assets/images/all.png", isHidden: 1, isAll: 1, isFav: 0),
-      Categories(name: "Favorites", image: "assets/images/fav.png" , isHidden: 1, isAll: 0, isFav: 1),
-      Categories(name: "Shopping", image: "assets/images/shopping.jpg", isHidden: 0, isFav: 0, isAll: 0),
-      Categories(name: "Event", image: "assets/images/event.png", isHidden: 0, isFav: 0, isAll: 0),
-      Categories(name: "Meeting", image: "assets/images/meeting.jpg", isHidden: 0, isFav: 0, isAll: 0),
-      Categories(name: "Work", image: "assets/images/work.png", isHidden: 0, isFav: 0, isAll: 0),
-      Categories(name: "Trip", image: "assets/images/trip.png", isHidden: 0, isFav: 0, isAll: 0),
-      Categories(name: "Other", image: "assets/images/todo.png", isHidden: 0, isFav: 0, isAll: 0),
+      Categories(name: "Show All", image: "assets/images/all.png", isHidden: 1, isAll: 1, isFav: 0, isDefault: 1),
+      Categories(name: "Favorites", image: "assets/images/fav.png" , isHidden: 1, isAll: 0, isFav: 1, isDefault: 1),
+      Categories(name: "Shopping", image: "assets/images/shopping.jpg", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
+      Categories(name: "Event", image: "assets/images/event.png", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
+      Categories(name: "Meeting", image: "assets/images/meeting.jpg", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
+      Categories(name: "Work", image: "assets/images/work.png", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
+      Categories(name: "Trip", image: "assets/images/trip.png", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
+      Categories(name: "Other", image: "assets/images/todo.png", isHidden: 0, isFav: 0, isAll: 0, isDefault: 1),
     ];
   }
 
@@ -58,7 +60,8 @@ class Categories {
       categoryColImage: image,
       categoryColHidden : isHidden,
       categoryColAll: isAll,
-      categoryColFav: isFav
+      categoryColFav: isFav,
+      categoryColDefault: isDefault
     };
     return map;
   }
@@ -70,6 +73,7 @@ class Categories {
     isAll = map[categoryColAll];
     isFav = map[categoryColFav];
     isHidden = map[categoryColHidden];
+    isDefault = map[categoryColDefault];
   }
 }
 

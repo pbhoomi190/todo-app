@@ -133,77 +133,124 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Future<void> updateCustomCategory(Categories cat) async {
+     await helper.updateCategory(cat).then((value) {
+         debugPrint("update cat");
+         setState(() {
+           var toEdit = allCategories.firstWhere((element) => element.id == cat.id);
+           toEdit = cat;
+         });
+     });
+
+  }
+
+  Future<int> deleteCategory(Categories category) async {
+    var result = await helper.deleteCategory(category.id);
+    setState(() {
+      var toRemove = allCategories.firstWhere((element) => element.id == category.id);
+      allCategories.remove(toRemove);
+    });
+    return result;
+  }
+
   void openCategoryListDialog(BuildContext context) {
     var obj = LocalizationManager.of(context);
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))
-            ),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return  Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(20))
-              ),
-              child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Column(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              openCategoryAdder();
-                            },
-                            child: Row(
-                              children: <Widget>[
-                                CircleAvatar(
-                                  radius: 20,
-                                  child: Icon(Icons.add)
-                                ),
-                                const SizedBox(width: 10,),
-                                Text(obj.getTranslatedValue("add_category"), overflow: TextOverflow.ellipsis, maxLines: 2,)
-                              ],
-                            ),
-                          ),
-                          Divider(),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        children: <Widget>[
-                          Row(
+                  child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListView.builder(itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Column(
                             children: <Widget>[
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: AssetImage(allCategories[index - 1].image),
+                              InkWell(
+                                onTap: () {
+                                  openCategoryAdder();
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    CircleAvatar(
+                                        radius: 20,
+                                        child: Icon(Icons.add)
+                                    ),
+                                    const SizedBox(width: 10,),
+                                    Text(obj.getTranslatedValue("add_category"), overflow: TextOverflow.ellipsis, maxLines: 2,)
+                                  ],
+                                ),
                               ),
-                              const SizedBox(width: 10,),
-                              Text(allCategories[index - 1].name, overflow: TextOverflow.ellipsis, maxLines: 2,)
+                              Divider(),
                             ],
-                          ),
-                          Divider()
-                        ],
-                      );
-                    }
-                  },
-                    itemCount: allCategories.length + 1,
-                  )
-              ),
-            ),
+                          );
+                        } else {
+                          return Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: AssetImage(allCategories[index - 1].image),
+                                  ),
+                                  const SizedBox(width: 10,),
+                                  Expanded(child: Text(allCategories[index - 1].name, overflow: TextOverflow.ellipsis, maxLines: 2,)),
+                                  Visibility(
+                                    visible: allCategories[index - 1].isDefault == 1 ? false : true,
+                                    child: IconButton(
+                                      icon: Icon(Icons.edit,),
+                                      onPressed: () {
+                                        openCategoryAdder(categories: allCategories[index - 1]);
+                                      },
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: allCategories[index - 1].isDefault == 1 ? false : true,
+                                    child: IconButton(
+                                      icon: Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        deleteCategory(allCategories[index - 1]).then((value) {
+                                          setState(() {
+
+                                          });
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Divider()
+                            ],
+                          );
+                        }
+                      },
+                        itemCount: allCategories.length + 1,
+                      )
+                  ),
+                ),
+              );
+            },
           );
         }
     );
   }
 
-  void openCategoryAdder() {
+  void openCategoryAdder({Categories categories}) {
+    textCategoryController.text = categories != null ? categories.name : "";
     stream = controller.stream;
     var obj = LocalizationManager.of(context);
       showDialog(context: context,
@@ -234,16 +281,23 @@ class _SettingScreenState extends State<SettingScreen> {
                 builder: (context, snapshot) {
                   if(snapshot.data == true) {
                     return FlatButton(
-                        child: Text(obj.getTranslatedValue("add_text")),
+                        child: Text(categories!= null ? obj.getTranslatedValue("edit_slide_button").toUpperCase():obj.getTranslatedValue("add_text")),
                         onPressed: (){
-                          addCustomCategory(textCategoryController.text.trim()).then((value) {
-                            textCategoryController.text = "";
-                            Navigator.pop(context);
-                          });
+                          if (categories == null) {
+                            addCustomCategory(textCategoryController.text.trim()).then((value) {
+                              textCategoryController.text = "";
+                              Navigator.pop(context);
+                            });
+                          } else {
+                            categories.name = textCategoryController.text.trim();
+                            updateCustomCategory(categories).then((value) {
+                              Navigator.pop(context);
+                            });
+                          }
                         });
                   } else {
                     return FlatButton(
-                        child: Text(obj.getTranslatedValue("add_text")),
+                        child: Text(categories!= null ? obj.getTranslatedValue("edit_slide_button"):obj.getTranslatedValue("add_text")),
                         onPressed: null);
                   }
                 },

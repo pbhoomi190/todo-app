@@ -48,7 +48,8 @@ class DatabaseHelper {
         '$categoryColImage TEXT, '
         '$categoryColHidden INTEGER, '
         '$categoryColAll INTEGER, '
-        '$categoryColFav INTEGER)'
+        '$categoryColFav INTEGER, '
+        '$categoryColDefault INTEGER)'
     );
 
     await db.execute('CREATE TABLE $tableName('
@@ -163,6 +164,22 @@ class DatabaseHelper {
     Database db = await this.database;
     var result = await db.insert(categoryTable, category.toMap());
     debugPrint("category add result ====> $result");
+    return result;
+  }
+
+  // Update category
+  Future updateCategory(Categories category) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('UPDATE $categoryTable SET $categoryColName = "${category.name}" WHERE $categoryColId == ${category.id}');
+    debugPrint("category update result ====> $result");
+    return result;
+  }
+
+  // Delete category
+  Future<int> deleteCategory(int id) async {
+    Database db = await this.database;
+    var result = await db.delete(categoryTable, where: '$categoryColId == $id');
+    debugPrint("category delete result ====> $result");
     return result;
   }
 
