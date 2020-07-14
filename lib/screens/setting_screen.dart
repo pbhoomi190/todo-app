@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
@@ -23,7 +24,8 @@ class _SettingScreenState extends State<SettingScreen> {
   List<Categories> allCategories = [];
   Language selectedLanguage = Language.listOfLanguage().first;
   TextEditingController textCategoryController = TextEditingController(text: "");
-  bool enableAddCategory = false;
+  StreamController<bool> controller = StreamController<bool>.broadcast();
+  Stream stream;
 
   void changeLanguage(Language language) {
     print(language.languageCode);
@@ -202,18 +204,19 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void openCategoryAdder() {
+    stream = controller.stream;
     var obj = LocalizationManager.of(context);
       showDialog(context: context,
         child: AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
-          content: new Row(
+          content: Row(
             children: <Widget>[
-              new Expanded(
-                child: new TextField(
+               Expanded(
+                child: TextField(
                   controller: textCategoryController,
                   maxLength: 15,
                   autofocus: true,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("category_label"), hintText: obj.getTranslatedValue("category_hint")),
                 ),
               )
@@ -226,14 +229,25 @@ class _SettingScreenState extends State<SettingScreen> {
                   textCategoryController.text = "";
                   Navigator.pop(context);
                 }),
-             FlatButton(
-                child: Text(obj.getTranslatedValue("add_text")),
-                onPressed: enableAddCategory == false ? null : (){
-                  addCustomCategory(textCategoryController.text.trim()).then((value) {
-                    textCategoryController.text = "";
-                    Navigator.pop(context);
-                  });
-                })
+             StreamBuilder<bool>(
+                stream: stream,
+                builder: (context, snapshot) {
+                  if(snapshot.data == true) {
+                    return FlatButton(
+                        child: Text(obj.getTranslatedValue("add_text")),
+                        onPressed: (){
+                          addCustomCategory(textCategoryController.text.trim()).then((value) {
+                            textCategoryController.text = "";
+                            Navigator.pop(context);
+                          });
+                        });
+                  } else {
+                    return FlatButton(
+                        child: Text(obj.getTranslatedValue("add_text")),
+                        onPressed: null);
+                  }
+                },
+             )
           ],
         )
       );
@@ -245,9 +259,8 @@ class _SettingScreenState extends State<SettingScreen> {
       isDarkTheme = prefs.getBool('isDark') ?? false;
     });
     textCategoryController.addListener(() {
-      setState(() {
-        enableAddCategory = textCategoryController.text.trim().isEmpty ? false : true;
-      });
+        var enableCategory = (textCategoryController.text.trim().isEmpty ? false : true);
+        controller.add(enableCategory);
     });
   }
 
@@ -339,6 +352,13 @@ class _SettingScreenState extends State<SettingScreen> {
     getData();
     getSelectedLanguage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.close();
+    textCategoryController.dispose();
+    super.dispose();
   }
 
   @override

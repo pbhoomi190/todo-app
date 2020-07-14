@@ -51,7 +51,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     debugPrint("update to-do called");
     updateReminder(isReminder);
       await helper.updateToDoItem(editToDo).then((value) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(editToDo);
       });
   }
 
@@ -229,10 +229,12 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   // Life cycle method
 
   void getDate() async {
-    date = await widget.toDo.date.dateString();
-    setState(() {
+    if (widget.toDo.date != 0) {
+      date = await widget.toDo.date.dateString();
+      setState(() {
         dateController.text = date;
-    });
+      });
+    }
   }
 
   @override
@@ -262,6 +264,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
           }, isRight: false,),
           SizedBox(height: 30),
           Expanded(
+
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),

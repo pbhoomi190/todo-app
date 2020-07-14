@@ -127,6 +127,18 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     }
   }
 
+  moveToEdit(ToDo todo) async {
+    await Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: todo), type: PageTransitionType.slideLeft)).then((value) {
+      if (value != null) {
+        ToDo editToDo = value;
+        var toBeFilter = filteredToDo.firstWhere((element) => editToDo.id == element.id);
+        setState(() {
+          toBeFilter = editToDo;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     fetchAllToDoItems();
@@ -227,7 +239,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                               ),
                             ],
                             child: ToDoListItem(toDo: filteredToDo[index], key: UniqueKey(), onFavClick: () {}, onEditClick: () {
-                              Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: filteredToDo[index],), type: PageTransitionType.slideLeft));
+                              moveToEdit(filteredToDo[index]);
                             },),
                           ),
                         ),
