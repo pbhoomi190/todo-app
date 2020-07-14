@@ -235,7 +235,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 ],
                 child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},
                   onEditClick: () {
-                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisWeek[index],), type: PageTransitionType.slideLeft));
+                    moveToEdit(thisWeek[index], UpcomingType.thisWeek);
                   },
                 )
             );
@@ -294,7 +294,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               child: ToDoListItem(
                 toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},
                 onEditClick: () {
-                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
+                  moveToEdit(thisMonth[index], UpcomingType.thisMonth);
                 },
               ),
             );
@@ -353,7 +353,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               child: ToDoListItem(
                 toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},
                 onEditClick: () {
-                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
+                  moveToEdit(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
                 },
               ),
             );
@@ -371,6 +371,35 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
       );
     }
   }
+
+  moveToEdit(ToDo todo, UpcomingType type) async {
+    await Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: todo), type: PageTransitionType.slideLeft)).then((value) {
+      if (value != null) {
+        ToDo editToDo = value;
+        switch (type) {
+          case UpcomingType.thisWeek:
+            var toBeFilter = thisWeek.firstWhere((element) => editToDo.id == element.id);
+            setState(() {
+              toBeFilter = editToDo;
+            });
+            break;
+          case UpcomingType.thisMonth:
+            var toBeFilter = thisMonth.firstWhere((element) => editToDo.id == element.id);
+            setState(() {
+              toBeFilter = editToDo;
+            });
+            break;
+          case UpcomingType.afterThisMonth:
+            var toBeFilter = laterAfterThisMonth.firstWhere((element) => editToDo.id == element.id);
+            setState(() {
+              toBeFilter = editToDo;
+            });
+            break;
+        }
+      }
+    });
+  }
+
 
   @override
   void initState() {

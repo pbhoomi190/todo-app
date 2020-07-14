@@ -101,6 +101,19 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     });
   }
 
+  moveToEdit(ToDo todo) async {
+    await Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: todo), type: PageTransitionType.slideLeft)).then((value) {
+      if (value != null) {
+        ToDo editToDo = value;
+        var toBeFilter = favorites.firstWhere((element) => editToDo.id == element.id);
+        setState(() {
+          toBeFilter = editToDo;
+        });
+      }
+    });
+  }
+
+
   @override
   void initState() {
     getFavorites();
@@ -166,7 +179,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 favorites.remove(favorites[index]);
               });
             }, onEditClick: () {
-              Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: favorites[index],), type: PageTransitionType.slideLeft));
+              moveToEdit(favorites[index]);
             },
             )
         );
