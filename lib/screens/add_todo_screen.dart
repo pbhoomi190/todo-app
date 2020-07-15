@@ -99,7 +99,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
     _focus.addListener(_onFocusChange);
     speechToTextForTitle = SpeechToText(onAvailable: (isAvailable) {
       if (!isAvailable) {
-        showSpeechAlert("This feature is not supported by your device");
+        debugPrint("speech not available");
       }
     }, onListening: (isListening) {
         debugPrint("Is listening add title ===> $isListening");
