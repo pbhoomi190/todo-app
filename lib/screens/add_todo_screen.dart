@@ -4,6 +4,7 @@ import 'package:flutter_page_transition/page_transition_type.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/todo_list_screen.dart';
+import 'package:fluttertododemo/speech_helper/speech_to_text_helper.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import '../custom_route_transition.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
@@ -32,6 +33,9 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   bool canReminderEnable = false;
   List<Categories> categories = [];
   DatabaseHelper helper = DatabaseHelper();
+  SpeechToText speechToTextForTitle;
+  FocusNode _focus = FocusNode();
+
 
   void showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message),);
@@ -71,6 +75,50 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   }
 
+  void showSpeechAlert(String message) {
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text("Alert!"),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK", style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        )
+    );
+  }
+
+  void _onFocusChange(){
+    debugPrint("Focus: "+_focus.hasFocus.toString());
+  }
+
+  void initSpeechToTextForTitle() {
+    _focus.addListener(_onFocusChange);
+    speechToTextForTitle = SpeechToText(onAvailable: (isAvailable) {
+      if (!isAvailable) {
+        showSpeechAlert("This feature is not supported by your device");
+      }
+    }, onListening: (isListening) {
+        debugPrint("Is listening add title ===> $isListening");
+    }, onPermissionStatus: (isGranted) {
+      if (!isGranted) {
+        showSpeechAlert("Please allow app to record audio");
+      }
+    }, onResult: (text) {
+      if (_focus.hasFocus == true) {
+        print("sfasfhasfkjashfjksahfjas");
+        titleController.text = text;
+      } else {
+        descController.text = text;
+        print("223532554");
+      }
+    },);
+    speechToTextForTitle.initSpeechRecognizer();
+  }
+
   Future<void> initialSetup() async {
       var results = await helper.fetchCategories();
       results.forEach((element) {
@@ -95,6 +143,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
         date = dateController.text;
         validate();
       });
+      initSpeechToTextForTitle();
   }
 
   Future openDatePicker(BuildContext ctx) async {
@@ -232,12 +281,23 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                 shrinkWrap: true,
                 children: <Widget>[
                   TextField(
+                    focusNode: _focus,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(25),
                       ],
                       controller: titleController,
+                      onEditingComplete: () {
+                        debugPrint("On editing complete on title");
+                        speechToTextForTitle.stop();
+                      },
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("title_text"),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.mic),
+                          onPressed: () {
+                            speechToTextForTitle.listen();
+                          },
+                        ),
                         border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(width: 2),
@@ -250,10 +310,20 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         LengthLimitingTextInputFormatter(150),
                       ],
                       controller: descController,
+                      onEditingComplete: () {
+                       debugPrint("On editing complete on title");
+                       speechToTextForTitle.stop();
+                      },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("desc_text"),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.mic),
+                          onPressed: () {
+                            speechToTextForTitle.listen();
+                          },
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: BorderSide(width: 2),

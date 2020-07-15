@@ -5,6 +5,7 @@ import 'package:fluttertododemo/constants/category.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
+import 'package:fluttertododemo/speech_helper/speech_to_text_helper.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 
@@ -35,6 +36,8 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   ToDo editToDo;
   bool isFromComplete = false;
   List<Categories> categories = [];
+  SpeechToText speechToTextForTitle;
+  FocusNode _focus = FocusNode();
 
   // Database update methods
 
@@ -97,6 +100,50 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     }
   }
 
+  void _onFocusChange(){
+    debugPrint("Focus: "+_focus.hasFocus.toString());
+  }
+
+  void initSpeechToTextForTitle() {
+    _focus.addListener(_onFocusChange);
+    speechToTextForTitle = SpeechToText(onAvailable: (isAvailable) {
+      if (!isAvailable) {
+        showSpeechAlert("This feature is not supported by your device");
+      }
+    }, onListening: (isListening) {
+      debugPrint("Is listening add title ===> $isListening");
+    }, onPermissionStatus: (isGranted) {
+      if (!isGranted) {
+        showSpeechAlert("Please allow app to record audio");
+      }
+    }, onResult: (text) {
+      if (_focus.hasFocus == true) {
+        print("sfasfhasfkjashfjksahfjas");
+        titleController.text = text;
+      } else {
+        descController.text = text;
+        print("223532554");
+      }
+    },);
+    speechToTextForTitle.initSpeechRecognizer();
+  }
+
+  void showSpeechAlert(String message) {
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text("Alert!"),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK", style: Theme.of(context).textTheme.bodyText2,),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        )
+    );
+  }
+
   Future<void> initialSetup() async {
     editToDo = widget.toDo;
     selectedCategory = await widget.toDo.category.getCategoryForId();
@@ -138,6 +185,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
       date = dateController.text;
       validate();
     });
+    initSpeechToTextForTitle();
   }
 
   // Picker handle methods
@@ -275,9 +323,16 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(25),
                     ],
+                    focusNode: _focus,
                     controller: titleController,
                     decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("title_text"),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.mic),
+                        onPressed: () {
+                          speechToTextForTitle.listen();
+                        },
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(width: 2),
@@ -294,6 +349,12 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     maxLines: null,
                     decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("desc_text"),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.mic),
+                        onPressed: () {
+                          speechToTextForTitle.listen();
+                        },
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(width: 2),
