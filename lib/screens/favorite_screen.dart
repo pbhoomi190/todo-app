@@ -6,6 +6,7 @@ import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
+import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 
 import '../custom_route_transition.dart';
@@ -20,6 +21,27 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   List<ToDo> favorites = [];
   DatabaseHelper helper = DatabaseHelper();
+  TextToSpeech textToSpeech;
+  ItemToDo playingItem;
+  String playText = "";
+
+  void managePlayingItem(ToDo todo, String text, bool isPlaying) {
+    playingItem = ItemToDo(toDo: todo, isPlaying: isPlaying);
+    if (isPlaying) {
+      textToSpeech.speak(text);
+    } else {
+      textToSpeech.stop();
+    }
+  }
+
+  initTextToSpeech() {
+    textToSpeech = TextToSpeech(isPlaying: (playing) {
+      setState(() {
+        playingItem.isPlaying = playing;
+      });
+    });
+    textToSpeech.initializeTts();
+  }
 
   Widget appTitle() {
     var obj = LocalizationManager.of(context);
@@ -49,6 +71,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       favorites.add(todo);
     });
     setState(() {
+      playingItem = ItemToDo(toDo: favorites.first, isPlaying: false);
       debugPrint("$favorites");
     });
   }
@@ -117,6 +140,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   void initState() {
     getFavorites();
+    initTextToSpeech();
     super.initState();
   }
 
@@ -148,14 +172,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.2,
             secondaryActions: <Widget>[
-             /* IconSlideAction(
-                caption: obj.getTranslatedValue("edit_slide_button"),
-                color: Theme.of(context).primaryColorLight,
-                icon: Icons.edit,
-                onTap: () {
-                  Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: favorites[index],), type: PageTransitionType.slideLeft));
-                },
-              ),*/
               IconSlideAction(
                 caption: obj.getTranslatedValue("complete_slide_button"),
                 color: Theme.of(context).primaryColor,
@@ -174,13 +190,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 },
               ),
             ],
-            child: ToDoListItem(toDo: favorites[index], key: UniqueKey(), onFavClick: () {
+            child: ToDoListItem(toDo: ItemToDo(toDo: favorites[index],
+                isPlaying: playingItem.toDo.id == favorites[index].id ? playingItem.isPlaying : false),
+              key: UniqueKey(),
+              onFavClick: () {
               setState(() {
                 favorites.remove(favorites[index]);
               });
-            }, onEditClick: () {
+            },
+              onEditClick: () {
               moveToEdit(favorites[index]);
             },
+              onPlay: (play, text) {
+                managePlayingItem(favorites[index], text, play);
+              },
             )
         );
       },

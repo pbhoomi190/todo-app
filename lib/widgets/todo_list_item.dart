@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
@@ -9,18 +8,20 @@ import 'package:fluttertododemo/language_support/localization_manager.dart';
 
 class ItemToDo {
   ToDo toDo;
-  bool isPlaying;
+  bool isPlaying = false;
 
   ItemToDo({this.toDo, this.isPlaying});
 }
 
+typedef void SpeechPlayingCallbackWithText(bool isPlaying, String text);
 class ToDoListItem extends StatefulWidget {
 
-  final ToDo toDo;
+  final ItemToDo toDo;
   final Key key;
   final VoidCallback onFavClick;
   final VoidCallback onEditClick;
-  ToDoListItem({this.toDo, this.key, this.onFavClick, this.onEditClick});
+  final SpeechPlayingCallbackWithText onPlay;
+  ToDoListItem({this.toDo, this.key, this.onFavClick, this.onEditClick, this.onPlay});
 
   @override
   _ToDoListItemState createState() => _ToDoListItemState();
@@ -32,7 +33,6 @@ class _ToDoListItemState extends State<ToDoListItem> {
   ItemToDo itemToDo;
   String dateString = "";
   String image = allImage;
-  FlutterTts _flutterTts;
   String txtToSpeak = "";
 
   manageFavourite() async {
@@ -43,15 +43,16 @@ class _ToDoListItemState extends State<ToDoListItem> {
       });
   }
 
-  getDate() async {
+  initialSetup() async {
+
     if (itemToDo.toDo.date != 0) {
       var date = await itemToDo.toDo.date.dateString();
       if (mounted) {
         setState(() {
           dateString = date;
+            txtToSpeak = "${itemToDo.toDo.title}, ${itemToDo.toDo.description}, $dateString}";
         });
       }
-      txtToSpeak = "${itemToDo.toDo.title}, ${itemToDo.toDo.description}, $dateString";
     }
     var cat = await itemToDo.toDo.category.getCategoryForId();
     if (mounted) {
@@ -61,63 +62,12 @@ class _ToDoListItemState extends State<ToDoListItem> {
     }
   }
 
-  initializeTts() {
-    _flutterTts = FlutterTts();
-
-    _flutterTts.setStartHandler(() {
-      setState(() {
-        itemToDo.isPlaying = true;
-      });
-    });
-
-    _flutterTts.setCompletionHandler(() {
-      setState(() {
-        itemToDo.isPlaying = false;
-      });
-    });
-
-    _flutterTts.setErrorHandler((err) {
-      setState(() {
-        print("error occurred: " + err);
-        itemToDo.isPlaying = false;
-      });
-    });
-  }
-
-  Future speak(String text) async {
-    if (text != null && text.isNotEmpty) {
-      var result = await _flutterTts.speak(text);
-      if (result == 1)
-        setState(() {
-          itemToDo.isPlaying = true;
-        });
-    }
-  }
-
-  Future stop() async {
-    var result = await _flutterTts.stop();
-    if (result == 1)
-      setState(() {
-        itemToDo.isPlaying = false;
-      });
-  }
-
-  void setTtsLanguage() async {
-    await _flutterTts.setLanguage("en-US");
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _flutterTts.stop();
-  }
-
   @override
   void initState() {
-    isFav = widget.toDo.isFavourite == 0 ? false : true;
-    itemToDo = ItemToDo(toDo: widget.toDo, isPlaying: false);
-    getDate();
-    initializeTts();
+    isFav = widget.toDo.toDo.isFavourite == 0 ? false : true;
+    itemToDo = widget.toDo;
+    txtToSpeak = "${itemToDo.toDo.title}, ${itemToDo.toDo.description}";
+    initialSetup();
     super.initState();
   }
 
@@ -156,12 +106,14 @@ class _ToDoListItemState extends State<ToDoListItem> {
                   ),
                   const SizedBox(width: 8,),
                   IconButton(
-                    icon: itemToDo.isPlaying ? Icon(Icons.stop) : Icon(Icons.record_voice_over),
+                    icon: itemToDo.isPlaying ? Icon(Icons.stop,
+                      color: Theme.of(context).primaryColor,) : Icon(Icons.record_voice_over,
+                      color: Theme.of(context).primaryColor,),
                     onPressed: () {
                       if (itemToDo.isPlaying) {
-                        stop();
+                        widget.onPlay(false, "");
                       } else {
-                        speak(txtToSpeak);
+                        widget.onPlay(true, txtToSpeak);
                       }
                     },
                   ),
@@ -178,7 +130,9 @@ class _ToDoListItemState extends State<ToDoListItem> {
                       height: 100,
                       child: IconButton(
                         tooltip: "favorite",
-                        icon: Icon(itemToDo.toDo.isFavourite == 0 ? Icons.favorite_border : Icons.favorite , color: Theme.of(context).primaryColor,),
+                        icon: Icon(
+                          itemToDo.toDo.isFavourite == 0 ? Icons.favorite_border : Icons.favorite,
+                          color: Theme.of(context).primaryColor,),
                         onPressed: () {
                           widget.onFavClick();
                           isFav = !isFav;

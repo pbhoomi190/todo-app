@@ -5,6 +5,7 @@ import 'package:fluttertododemo/constants/constants.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
+import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 
 import '../custom_route_transition.dart';
@@ -19,6 +20,27 @@ class _CompletedScreenState extends State<CompletedScreen> {
 
   List<ToDo> completed = [];
   DatabaseHelper helper = DatabaseHelper();
+  TextToSpeech textToSpeech;
+  ItemToDo playingItem;
+  String playText = "";
+
+  void managePlayingItem(ToDo todo, String text, bool isPlaying) {
+    playingItem = ItemToDo(toDo: todo, isPlaying: isPlaying);
+    if (isPlaying) {
+      textToSpeech.speak(text);
+    } else {
+      textToSpeech.stop();
+    }
+  }
+
+  initTextToSpeech() {
+    textToSpeech = TextToSpeech(isPlaying: (playing) {
+      setState(() {
+        playingItem.isPlaying = playing;
+      });
+    });
+    textToSpeech.initializeTts();
+  }
 
   Widget appTitle() {
     var obj = LocalizationManager.of(context);
@@ -48,6 +70,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
       completed.add(todo);
     });
     setState(() {
+      playingItem = ItemToDo(toDo: completed.first, isPlaying: false);
       debugPrint("$completed");
     });
   }
@@ -144,7 +167,15 @@ class _CompletedScreenState extends State<CompletedScreen> {
               },
             ),
             ],
-            child: ToDoListItem(toDo: completed[index], key: UniqueKey(), onFavClick: () {}, onEditClick: () {},)
+            child: ToDoListItem(toDo: ItemToDo(toDo: completed[index],
+                isPlaying: playingItem.toDo.id == completed[index].id ? playingItem.isPlaying : false),
+              key: UniqueKey(),
+              onFavClick: () {},
+              onEditClick: () {},
+              onPlay: (play, text) {
+                managePlayingItem(completed[index], text, play);
+              },
+            )
         );
       },
         itemCount: completed != null && completed.length > 0 ? completed.length : 0,

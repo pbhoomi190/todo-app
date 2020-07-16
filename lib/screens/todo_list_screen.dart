@@ -4,6 +4,7 @@ import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/edit_todo_screen.dart';
+import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/filtered_list_inherited_widget.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +26,27 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   List<ToDo> allToDo = [];
   Categories selectedCategory;
   List<Categories> categories = [];
+  TextToSpeech textToSpeech;
+  ItemToDo playingItem;
+  String playText = "";
+
+  void managePlayingItem(ToDo todo, String text, bool isPlaying) {
+    playingItem = ItemToDo(toDo: todo, isPlaying: isPlaying);
+    if (isPlaying) {
+      textToSpeech.speak(text);
+    } else {
+      textToSpeech.stop();
+    }
+  }
+
+  initTextToSpeech() {
+    textToSpeech = TextToSpeech(isPlaying: (playing) {
+      setState(() {
+        playingItem.isPlaying = playing;
+      });
+    });
+    textToSpeech.initializeTts();
+  }
 
   void showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message),);
@@ -46,6 +68,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     });
     setState(() {
       filteredToDo = allToDo;
+      playingItem = ItemToDo(toDo: filteredToDo.first, isPlaying: false);
         debugPrint("$allToDo");
     });
   }
@@ -142,6 +165,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   @override
   void initState() {
     fetchAllToDoItems();
+    initTextToSpeech();
     super.initState();
     controller.addListener(() {
       double value = controller.offset/120;
@@ -152,6 +176,13 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
       });
     });
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textToSpeech.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -238,9 +269,15 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                                 },
                               ),
                             ],
-                            child: ToDoListItem(toDo: filteredToDo[index], key: UniqueKey(), onFavClick: () {}, onEditClick: () {
+                            child: ToDoListItem(toDo: ItemToDo(toDo: filteredToDo[index],
+                                isPlaying: playingItem.toDo.id == filteredToDo[index].id ? playingItem.isPlaying : false),
+                              key: UniqueKey(),
+                              onFavClick: () {},
+                              onEditClick: () {
                               moveToEdit(filteredToDo[index]);
-                            },),
+                            }, onPlay: (play, text) {
+                                  managePlayingItem(filteredToDo[index], text, play);
+                              },),
                           ),
                         ),
                       );

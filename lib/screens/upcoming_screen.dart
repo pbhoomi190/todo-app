@@ -6,6 +6,7 @@ import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
+import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/todo_list_item.dart';
 
 import '../custom_route_transition.dart';
@@ -26,6 +27,27 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   List<ToDo> thisMonth = [];
   List<ToDo> laterAfterThisMonth = [];
   DatabaseHelper helper = DatabaseHelper();
+  TextToSpeech textToSpeech;
+  ItemToDo playingItem;
+  String playText = "";
+
+  void managePlayingItem(ToDo todo, String text, bool isPlaying) {
+    playingItem = ItemToDo(toDo: todo, isPlaying: isPlaying);
+    if (isPlaying) {
+      textToSpeech.speak(text);
+    } else {
+      textToSpeech.stop();
+    }
+  }
+
+  initTextToSpeech() {
+    textToSpeech = TextToSpeech(isPlaying: (playing) {
+      setState(() {
+        playingItem.isPlaying = playing;
+      });
+    });
+    textToSpeech.initializeTts();
+  }
 
   Future deleteToDo(UpcomingType type, ToDo toDo) async {
     var result = await helper.deleteToDoItem(toDo);
@@ -126,6 +148,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     results.forEach((element) {
       var todo = ToDo.fromMap(element);
       thisMonthToDo.add(todo);
+      playingItem = ItemToDo(toDo: thisMonthToDo.first, isPlaying: false);
     });
     other.forEach((element) {
       var todo = ToDo.fromMap(element);
@@ -233,9 +256,15 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                     },
                   ),
                 ],
-                child: ToDoListItem(toDo: thisWeek[index], key: UniqueKey(), onFavClick: (){},
+                child: ToDoListItem(toDo: ItemToDo(toDo: thisWeek[index],
+                    isPlaying: playingItem.toDo.id == thisWeek[index].id ? playingItem.isPlaying : false),
+                  key: UniqueKey(),
+                  onFavClick: (){},
                   onEditClick: () {
                     moveToEdit(thisWeek[index], UpcomingType.thisWeek);
+                  },
+                  onPlay: (play, text) {
+                    managePlayingItem(thisWeek[index], text, play);
                   },
                 )
             );
@@ -264,15 +293,6 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.2,
               secondaryActions: <Widget>[
-               /* IconSlideAction(
-                  caption: obj.getTranslatedValue("edit_slide_button"),
-                  color: Theme.of(context).primaryColorLight,
-                  icon: Icons.edit,
-                  onTap: () {
-                    print("Edit");
-                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: thisMonth[index],), type: PageTransitionType.slideLeft));
-                  },
-                ),*/
                 IconSlideAction(
                   caption: obj.getTranslatedValue("complete_slide_button"),
                   color: Theme.of(context).primaryColor,
@@ -292,9 +312,15 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 ),
               ],
               child: ToDoListItem(
-                toDo: thisMonth[index], key: UniqueKey(),onFavClick: (){},
+                toDo: ItemToDo(toDo: thisMonth[index],
+                    isPlaying: playingItem.toDo.id == thisMonth[index].id ? playingItem.isPlaying : false),
+                key: UniqueKey(),
+                onFavClick: (){},
                 onEditClick: () {
                   moveToEdit(thisMonth[index], UpcomingType.thisMonth);
+                },
+                onPlay: (play, text) {
+                  managePlayingItem(thisMonth[index], text, play);
                 },
               ),
             );
@@ -323,15 +349,6 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.2,
               secondaryActions: <Widget>[
-                /*IconSlideAction(
-                  caption: obj.getTranslatedValue("edit_slide_button"),
-                  color: Theme.of(context).primaryColorLight,
-                  icon: Icons.edit,
-                  onTap: () {
-                    print("Edit");
-                    Navigator.of(context).push(CustomRoute(page: EditToDoScreen(toDo: laterAfterThisMonth[index],), type: PageTransitionType.slideLeft));
-                  },
-                ),*/
                 IconSlideAction(
                   caption: obj.getTranslatedValue("complete_slide_button"),
                   color: Theme.of(context).primaryColor,
@@ -351,9 +368,15 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                 ),
               ],
               child: ToDoListItem(
-                toDo: laterAfterThisMonth[index], key: UniqueKey(), onFavClick: (){},
+                toDo: ItemToDo(toDo: laterAfterThisMonth[index],
+                    isPlaying: playingItem.toDo.id == laterAfterThisMonth[index].id ? playingItem.isPlaying : false),
+                key: UniqueKey(),
+                onFavClick: (){},
                 onEditClick: () {
                   moveToEdit(laterAfterThisMonth[index], UpcomingType.afterThisMonth);
+                },
+                onPlay: (play, text) {
+                  managePlayingItem(laterAfterThisMonth[index], text, play);
                 },
               ),
             );
