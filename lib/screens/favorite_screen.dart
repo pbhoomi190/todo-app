@@ -145,6 +145,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    textToSpeech.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var obj = LocalizationManager.of(context);
     return Scaffold(

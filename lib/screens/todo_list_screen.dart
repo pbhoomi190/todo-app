@@ -183,7 +183,6 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     textToSpeech.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
