@@ -146,6 +146,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<int> deleteCategory(Categories category) async {
     var result = await helper.deleteCategory(category.id);
+    var ans = await helper.updateCategoryId(category.id);
     setState(() {
       var toRemove = allCategories.firstWhere((element) => element.id == category.id);
       allCategories.remove(toRemove);

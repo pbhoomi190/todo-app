@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertododemo/constants/category.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
@@ -114,7 +113,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
       debugPrint("Is listening add title ===> $isListening");
     }, onPermissionStatus: (isGranted) {
       if (!isGranted) {
-        showSpeechAlert("Please allow app to record audio");
+        print("Please allow app to record audio");
       }
     }, onResult: (text) {
       if (_focus.hasFocus == true) {

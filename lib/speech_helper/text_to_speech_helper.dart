@@ -1,5 +1,6 @@
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertododemo/constants/constants.dart';
 
 typedef void SpeechPlayingCallback(bool isPlaying);
 class TextToSpeech {
@@ -16,6 +17,7 @@ class TextToSpeech {
   initializeTts() {
 
     _flutterTts = FlutterTts();
+    setTtsLanguage();
 
     _flutterTts.setStartHandler(() {
       debugPrint("start handler called");
@@ -50,6 +52,7 @@ class TextToSpeech {
   }
 
   void setTtsLanguage() async {
-    await _flutterTts.setLanguage("en-US");
+    var language = appGlobalLocale.languageCode;
+    await _flutterTts.setLanguage(language);
   }
 }

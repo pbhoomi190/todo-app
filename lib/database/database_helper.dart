@@ -190,6 +190,12 @@ class DatabaseHelper {
     return categories;
   }
 
+  Future<void> updateCategoryId(int categoryId) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('UPDATE $tableName SET $categoryColId = 8 WHERE $categoryColId == $categoryId');
+    return result;
+  }
+
   // Add To-Do item
   Future<int> createToDoListItem(ToDo toDo) async {
     debugPrint("TODO to add:- ${toDo.toMap()}");

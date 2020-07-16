@@ -9,7 +9,6 @@ import 'package:fluttertododemo/screens/todo_list_screen.dart';
 import 'package:fluttertododemo/screens/upcoming_screen.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_route_transition.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           boxShadow: [BoxShadow(color: Colors.black, blurRadius: 1, spreadRadius: 1.5),]
         ),
 
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
           child: Row(
@@ -71,24 +70,24 @@ class _HomeScreenState extends State<HomeScreen> {
               onSetting: () {
               Navigator.of(context).push(CustomRoute(page: SettingScreen(), type: PageTransitionType.rippleRightDown));
             },),
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             Expanded(
               flex: 1,
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  toDoItemButton(obj.getTranslatedValue("all_button"), Icon(Icons.calendar_today), HexColor.fromHex("DF7777"), () {
+                  toDoItemButton(obj.getTranslatedValue("all_button"), const Icon(Icons.calendar_today), HexColor.fromHex("DF7777"), () {
                     print("Go to all list");
                     Navigator.of(context).push(CustomRoute(page: ToDoListScreen(), type: PageTransitionType.slideLeft));
                   }),
-                  toDoItemButton(obj.getTranslatedValue("upcoming_button"), Icon(Icons.calendar_today), HexColor.fromHex("D1A168"), () {
+                  toDoItemButton(obj.getTranslatedValue("upcoming_button"), const Icon(Icons.calendar_today), HexColor.fromHex("D1A168"), () {
                     Navigator.of(context).push(CustomRoute(page: UpcomingScreen(), type: PageTransitionType.slideLeft));
                   }),
-                  toDoItemButton(obj.getTranslatedValue("favorite_button"), Icon(Icons.favorite), HexColor.fromHex("87C8CC"), () {
+                  toDoItemButton(obj.getTranslatedValue("favorite_button"), const Icon(Icons.favorite), HexColor.fromHex("87C8CC"), () {
                     print("Go to fav list");
                     Navigator.of(context).push(CustomRoute(page: FavoriteScreen(), type: PageTransitionType.slideLeft));
                   }),
-                  toDoItemButton(obj.getTranslatedValue("completed_button"), Icon(Icons.replay), HexColor.fromHex("C4C4C4"), () {
+                  toDoItemButton(obj.getTranslatedValue("completed_button"), const Icon(Icons.replay), HexColor.fromHex("C4C4C4"), () {
                     Navigator.of(context).push(CustomRoute(page: CompletedScreen(), type: PageTransitionType.slideLeft));
                   }),
                 ],
@@ -98,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: obj.getTranslatedValue("add_todo_talkback"),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).push(CustomRoute(page: AddToDoScreen(), type: PageTransitionType.rippleRightUp));
         },

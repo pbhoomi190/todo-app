@@ -105,7 +105,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
         debugPrint("Is listening add title ===> $isListening");
     }, onPermissionStatus: (isGranted) {
       if (!isGranted) {
-        showSpeechAlert("Please allow app to record audio");
+        print("Please allow app to record audio");
       }
     }, onResult: (text) {
       if (_focus.hasFocus == true) {
@@ -181,7 +181,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                 borderRadius:
                 BorderRadius.circular(20.0)), //this right here
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorLight],
@@ -272,7 +272,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
           CustomTopBar(title: obj.getTranslatedValue("add_todo_title"), subTitle: obj.getTranslatedValue("add_todo_subtitle"), isLeft: true, onPop: () {
             Navigator.of(context).pop();
           }, isRight: false,),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Expanded(
             flex: 1,
             child: Padding(
