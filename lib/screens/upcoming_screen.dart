@@ -427,6 +427,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   @override
   void initState() {
     getUpcomingList();
+    initTextToSpeech();
     super.initState();
   }
 

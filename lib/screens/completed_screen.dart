@@ -118,6 +118,7 @@ class _CompletedScreenState extends State<CompletedScreen> {
   @override
   void initState() {
     getCompleted();
+    initTextToSpeech();
     super.initState();
   }
 
