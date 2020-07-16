@@ -329,7 +329,6 @@ class _SettingScreenState extends State<SettingScreen> {
           Tooltip(
             message: obj.getTranslatedValue("dark_theme_msg_talkback"),
             child: Switch(
-              activeColor: Theme.of(context).primaryColor,
               value: isDarkTheme,
               onChanged: (isOn) {
                 setState(() {
