@@ -33,7 +33,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   bool canReminderEnable = false;
   List<Categories> categories = [];
   DatabaseHelper helper = DatabaseHelper();
-  SpeechToText speechToTextForTitle;
+  SpeechToConvertText speechToTextForTitle = SpeechToConvertText();
   FocusNode _focus = FocusNode();
 
 
@@ -97,17 +97,8 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void initSpeechToTextForTitle() {
     _focus.addListener(_onFocusChange);
-    speechToTextForTitle = SpeechToText(onAvailable: (isAvailable) {
-      if (!isAvailable) {
-        debugPrint("speech not available");
-      }
-    }, onListening: (isListening) {
-        debugPrint("Is listening add title ===> $isListening");
-    }, onPermissionStatus: (isGranted) {
-      if (!isGranted) {
-        print("Please allow app to record audio");
-      }
-    }, onResult: (text) {
+
+    speechToTextForTitle.resultObserver.listen((text) {
       if (_focus.hasFocus == true) {
         print("sfasfhasfkjashfjksahfjas");
         titleController.text = text;
@@ -115,8 +106,11 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
         descController.text = text;
         print("223532554");
       }
-    },);
-    speechToTextForTitle.initSpeechRecognizer();
+    });
+
+    speechToTextForTitle.permissionObserver.listen((value) {
+      debugPrint("permission status ======> $value");
+    });
   }
 
   Future<void> initialSetup() async {
@@ -288,14 +282,14 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       controller: titleController,
                       onEditingComplete: () {
                         debugPrint("On editing complete on title");
-                        speechToTextForTitle.stop();
+                        speechToTextForTitle.stopListening();
                       },
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("title_text"),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.mic),
                           onPressed: () {
-                            speechToTextForTitle.listen();
+                            speechToTextForTitle.startListening();
                           },
                         ),
                         border: OutlineInputBorder(
@@ -312,7 +306,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       controller: descController,
                       onEditingComplete: () {
                        debugPrint("On editing complete on title");
-                       speechToTextForTitle.stop();
+                       speechToTextForTitle.stopListening();
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -321,7 +315,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         suffixIcon: IconButton(
                           icon: Icon(Icons.mic),
                           onPressed: () {
-                            speechToTextForTitle.listen();
+                            speechToTextForTitle.startListening();
                           },
                         ),
                         border: OutlineInputBorder(
