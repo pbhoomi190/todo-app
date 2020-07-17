@@ -209,7 +209,11 @@ class _SettingScreenState extends State<SettingScreen> {
                                     backgroundImage: AssetImage(allCategories[index - 1].image),
                                   ),
                                   const SizedBox(width: 10,),
-                                  Expanded(child: Text(allCategories[index - 1].name, overflow: TextOverflow.ellipsis, maxLines: 2,)),
+                                  Expanded(child: Text(
+                                    allCategories[index - 1].isDefault == 1 ? obj.getTranslatedValue(allCategories[index - 1].name) : allCategories[index - 1].name,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,)
+                                  ),
                                   Visibility(
                                     visible: allCategories[index - 1].isDefault == 1 ? false : true,
                                     child: IconButton(
@@ -457,7 +461,8 @@ class _SettingScreenState extends State<SettingScreen> {
                             Text(obj.getTranslatedValue("reminder_setting"), style: Theme.of(context).textTheme.bodyText1, maxLines: 2,
                               overflow: TextOverflow.ellipsis,),
                             const SizedBox(height: 5,),
-                            Text("${obj.getTranslatedValue("remind_before_text")} ${ selectedTime != null ? selectedTime.name : "15 minutes"}", style: Theme.of(context).textTheme.bodyText1, maxLines: 2,
+                            Text("${obj.getTranslatedValue("remind_before_text")} ${ selectedTime != null ? '${obj.getTranslatedValue(selectedTime.name)}' : "15 minutes"}",
+                              style: Theme.of(context).textTheme.bodyText1, maxLines: 2,
                                 overflow: TextOverflow.ellipsis,),
                             const SizedBox(height: 5,),
                             Text(obj.getTranslatedValue("remind_suggestion_text"),

@@ -11,6 +11,7 @@ class TimeSelectDialog extends StatelessWidget {
   TimeSelectDialog({this.onReminderTimeChange, this.reminderTimes});
 
   Widget reminderTimeButton(BuildContext context, Reminder reminder) {
+    var obj = LocalizationManager.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -19,7 +20,7 @@ class TimeSelectDialog extends StatelessWidget {
           onPressed: () {
             onReminderTimeChange(reminder);
           },
-          child: Text(reminder.name, style: Theme.of(context).textTheme.bodyText2),
+          child: Text(obj.getTranslatedValue(reminder.name), style: Theme.of(context).textTheme.bodyText2),
         ),
       ],
     );
