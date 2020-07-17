@@ -36,7 +36,6 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   SpeechToConvertText speechToTextForTitle = SpeechToConvertText();
   FocusNode _focus = FocusNode();
 
-
   void showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message),);
     _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -286,11 +285,23 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       },
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("title_text"),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.mic),
-                          onPressed: () {
-                            speechToTextForTitle.startListening();
-                          },
+                        suffixIcon: Wrap(
+                          direction: Axis.horizontal,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.mic_off),
+                              onPressed: () {
+                                speechToTextForTitle.stopListening();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.mic),
+                              onPressed: () {
+                                speechToTextForTitle.lastWords = titleController.text;
+                                speechToTextForTitle.startListening();
+                              },
+                            ),
+                          ],
                         ),
                         border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
@@ -312,11 +323,23 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                       maxLines: null,
                       decoration: InputDecoration(
                         labelText: obj.getTranslatedValue("desc_text"),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.mic),
-                          onPressed: () {
-                            speechToTextForTitle.startListening();
-                          },
+                        suffixIcon: Wrap(
+                          direction: Axis.horizontal,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.mic_off),
+                              onPressed: () {
+                                speechToTextForTitle.stopListening();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.mic),
+                              onPressed: () {
+                                  speechToTextForTitle.lastWords = descController.text;
+                                  speechToTextForTitle.startListening();
+                              },
+                            ),
+                          ],
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),

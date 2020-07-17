@@ -57,7 +57,6 @@ class SpeechToConvertText {
 
   void listen() async {
     bool hasSpeech = await this.speechToText;
-    lastWords = "";
     lastError = "";
     speech.listen(
         onResult: resultListener,
@@ -102,9 +101,8 @@ class SpeechToConvertText {
   }
 
   void resultListener(SpeechRecognitionResult result) {
-    lastWords = "${result.recognizedWords} - ${result.finalResult}";
     debugPrint("result listner =====> ${result.recognizedWords}");
-    resultObserver.add(result.recognizedWords);
+    resultObserver.add(lastWords + " " + result.recognizedWords);
   }
 
   void errorListener(SpeechRecognitionError error) {

@@ -324,11 +324,23 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     },
                     decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("title_text"),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.mic),
-                        onPressed: () {
-                          speechToTextForTitle.startListening();
-                        },
+                      suffixIcon: Wrap(
+                        direction: Axis.horizontal,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.mic_off),
+                            onPressed: () {
+                              speechToTextForTitle.stopListening();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.mic),
+                            onPressed: () {
+                              speechToTextForTitle.lastWords = titleController.text;
+                              speechToTextForTitle.startListening();
+                            },
+                          ),
+                        ],
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
@@ -350,11 +362,23 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
                     },
                     decoration: InputDecoration(
                       labelText: obj.getTranslatedValue("desc_text"),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.mic),
-                        onPressed: () {
-                          speechToTextForTitle.startListening();
-                        },
+                      suffixIcon: Wrap(
+                        direction: Axis.horizontal,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.mic_off),
+                            onPressed: () {
+                              speechToTextForTitle.stopListening();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.mic),
+                            onPressed: () {
+                              speechToTextForTitle.lastWords = descController.text;
+                              speechToTextForTitle.startListening();
+                            },
+                          ),
+                        ],
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
