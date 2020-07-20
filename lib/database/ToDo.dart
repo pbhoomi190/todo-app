@@ -20,6 +20,7 @@ final String colDate = "date";
 final String colReminder = "isReminderOn";
 final String colFavourite = "isFavourite";
 final String colCompleted = "isCompleted";
+final String colReminderTune = "reminder_tune";
 
 // Reminder table
 final String reminderTable = "reminder_table";
@@ -121,8 +122,9 @@ class ToDo {
   @required int isReminderOn = 1;
   int isFavourite = 0;
   int isCompleted = 0;
+  String reminderTune = "";
 
-  ToDo({this.title, this.description, this.date, this.category, this.isReminderOn});
+  ToDo({this.title, this.description, this.date, this.category, this.isReminderOn, this.reminderTune});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -133,7 +135,8 @@ class ToDo {
       categoryColId: category,
       colReminder: isReminderOn,
       colFavourite: isFavourite,
-      colCompleted: isCompleted
+      colCompleted: isCompleted,
+      colReminderTune: reminderTune
     };
     return map;
   }
@@ -147,5 +150,6 @@ class ToDo {
     isReminderOn = map[colReminder];
     isFavourite = map[colFavourite];
     isCompleted = map[colCompleted];
+    reminderTune = map[colReminderTune];
   }
 }

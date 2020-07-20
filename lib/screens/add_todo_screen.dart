@@ -5,6 +5,7 @@ import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/todo_list_screen.dart';
 import 'package:fluttertododemo/speech_helper/speech_to_text_helper.dart';
+import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import '../custom_route_transition.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
@@ -228,7 +229,19 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void addToDoItem() async {
     var obj = LocalizationManager.of(context);
-    ToDo toDo = ToDo(title: title, description: desc, date: dateInt, category: selectedCategory.id, isReminderOn: isReminder ? 1 : 0);
+    String reminderTune = "";
+    if (isReminder) {
+      TextToSpeech tts = TextToSpeech();
+      tts.initializeTts();
+      reminderTune = await tts.getAudioForNotification(title);
+    }
+    ToDo toDo = ToDo(
+        title: title,
+        description: desc,
+        date: dateInt,
+        category: selectedCategory.id,
+        isReminderOn: isReminder ? 1 : 0,
+        reminderTune: reminderTune);
     var result = await helper.createToDoListItem(toDo);
     if (result == 0) {
       showSnackBar(obj.getTranslatedValue("create_error_msg"));

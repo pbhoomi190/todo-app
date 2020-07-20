@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertododemo/constants/constants.dart';
@@ -54,5 +56,12 @@ class TextToSpeech {
   void setTtsLanguage() async {
     var language = appGlobalLocale.languageCode;
     await _flutterTts.setLanguage(language);
+  }
+
+  Future<String> getAudioForNotification(String text) async {
+    var unique = UniqueKey().toString();
+    var result = await _flutterTts.synthesizeToFile(text, Platform.isAndroid ? "$unique.mp3" : "$unique.caf");
+    debugPrint("result of get audio === > $result");
+    return Platform.isAndroid ? "$unique.mp3" : "$unique.caf";
   }
 }

@@ -61,6 +61,7 @@ class DatabaseHelper {
         '$colReminder INTEGER, '
         '$colFavourite INTEGER, '
         '$colCompleted INTEGER, '
+        '$colReminderTune TEXT, '
         'FOREIGN KEY ($categoryColId) REFERENCES $categoryTable($categoryColId))'
     );
 
@@ -272,6 +273,13 @@ class DatabaseHelper {
       debugPrint(error);
     }
 
+  }
+
+  // Update reminder tune
+  Future updateReminderTune(ToDo toDo) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('UPDATE $tableName SET $colReminderTune = "${toDo.reminderTune}" WHERE $colId == ${toDo.id}');
+    return result;
   }
 
     // Get this month to-do
