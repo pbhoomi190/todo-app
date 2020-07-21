@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_page_transition/page_transition_type.dart';
+import 'package:fluttertododemo/database/calendar_helper.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/screens/todo_list_screen.dart';
 import 'package:fluttertododemo/speech_helper/speech_to_text_helper.dart';
-import 'package:fluttertododemo/speech_helper/text_to_speech_helper.dart';
 import 'package:fluttertododemo/widgets/custom_top_bar.dart';
 import '../custom_route_transition.dart';
 import 'package:fluttertododemo/database/ToDo.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
+import 'package:fluttertododemo/ml_helper/image_picker_screen.dart';
 
 class AddToDoScreen extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
   TextEditingController categoryController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  CalendarHelper calendarHelper = CalendarHelper();
 
   Categories selectedCategory;
   String title = "";
@@ -100,11 +102,9 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
     speechToTextForTitle.resultObserver.listen((text) {
       if (_focus.hasFocus == true) {
-        print("sfasfhasfkjashfjksahfjas");
         titleController.text = text;
       } else {
         descController.text = text;
-        print("223532554");
       }
     });
 
@@ -229,26 +229,38 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
 
   void addToDoItem() async {
     var obj = LocalizationManager.of(context);
-    String reminderTune = "";
-    if (isReminder) {
-      TextToSpeech tts = TextToSpeech();
-      tts.initializeTts();
-      reminderTune = await tts.getAudioForNotification(title);
-    }
     ToDo toDo = ToDo(
         title: title,
         description: desc,
         date: dateInt,
         category: selectedCategory.id,
-        isReminderOn: isReminder ? 1 : 0,
-        reminderTune: reminderTune);
+        isReminderOn: isReminder ? 1 : 0,);
     var result = await helper.createToDoListItem(toDo);
     if (result == 0) {
       showSnackBar(obj.getTranslatedValue("create_error_msg"));
     } else {
       showSnackBar(obj.getTranslatedValue("create_success_msg"));
-      Navigator.of(context).pushReplacement(CustomRoute(page: ToDoListScreen(), type: PageTransitionType.slideLeft));
+      if (toDo.category == 4 && toDo.date != 0) {
+        toDo.id = result;
+        addToCalendar(toDo, result);
+      } else {
+        Navigator.of(context).pushReplacement(CustomRoute(page: ToDoListScreen(), type: PageTransitionType.slideLeft));
+      }
     }
+  }
+
+  void addToCalendar(ToDo toDo, int id) async{
+    calendarHelper.retrieveCalendars().then((value) {
+      calendarHelper.addToCalendar(toDo).then((value) {
+        Navigator.of(context).pushReplacement(CustomRoute(page: ToDoListScreen(), type: PageTransitionType.slideLeft));
+      });
+    });
+  }
+
+  void moveToGetDescriptionFromText() async {
+      var result = await Navigator.of(context).push(CustomRoute(page: ImagePickerScreen(), type: PageTransitionType.slideInLeft));
+        String description = result as String;
+          descController.text = description;
   }
 
   @override
@@ -360,6 +372,18 @@ class _AddToDoScreenState extends State<AddToDoScreen> {
                         ),
                       ),
                     ),
+                  InkWell(
+                    onTap: () {
+                      moveToGetDescriptionFromText();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(obj.getTranslatedValue("image_picker"), style: TextStyle(fontSize: 14),),
+                        Icon(Icons.navigate_next)
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 15),
                   TextField(
                     readOnly: true,

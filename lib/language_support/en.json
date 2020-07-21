@@ -77,5 +77,6 @@
   "15 minutes" : "15 minutes",
   "30 minutes" : "30 minutes",
   "45 minutes" : "45 minutes",
-  "1 hour" : "1 hour"
+  "1 hour" : "1 hour",
+  "image_picker" : "Get description from image"
 }

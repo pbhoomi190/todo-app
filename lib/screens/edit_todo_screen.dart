@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertododemo/constants/extensions.dart';
+import 'package:fluttertododemo/database/calendar_helper.dart';
 import 'package:fluttertododemo/database/database_helper.dart';
 import 'package:fluttertododemo/language_support/localization_manager.dart';
 import 'package:fluttertododemo/speech_helper/speech_to_text_helper.dart';
@@ -37,6 +38,7 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
   List<Categories> categories = [];
   SpeechToConvertText speechToTextForTitle = SpeechToConvertText();
   FocusNode _focus = FocusNode();
+  CalendarHelper calendarHelper = CalendarHelper();
 
   // Database update methods
 
@@ -53,14 +55,35 @@ class _EditToDoScreenState extends State<EditToDoScreen> {
     debugPrint("update to-do called");
     updateReminder(isReminder);
       await helper.updateToDoItem(editToDo).then((value) {
-        Navigator.of(context).pop(editToDo);
+        if (editToDo.category == 4 && editToDo.date != 0) {
+          calendarHelper.updateToCalendar(editToDo).then((value) {
+            editToDo = value;
+              Navigator.of(context).pop(editToDo);
+          });
+        } else {
+          calendarHelper.deleteFromCalendar(editToDo).then((value) {
+            editToDo = value;
+              Navigator.of(context).pop(editToDo);
+          });
+        }
+
       });
   }
 
   Future<void> reAddToDo() async {
     ToDo toDo = ToDo(title: title, description: desc, date: editToDo.date, category: selectedCategory.id);
     await helper.createToDoListItem(toDo).then((value) {
+      if (toDo.category == 4 && toDo.date != 0) {
+        toDo.id = value;
+        addToCalendar(toDo);
+      }
       Navigator.of(context).pop();
+    });
+  }
+
+  void addToCalendar(ToDo toDo) async{
+    calendarHelper.retrieveCalendars().then((value) {
+      calendarHelper.addToCalendar(toDo);
     });
   }
 

@@ -21,6 +21,7 @@ final String colReminder = "isReminderOn";
 final String colFavourite = "isFavourite";
 final String colCompleted = "isCompleted";
 final String colReminderTune = "reminder_tune";
+final String colEventId = "event_id";
 
 // Reminder table
 final String reminderTable = "reminder_table";
@@ -123,6 +124,7 @@ class ToDo {
   int isFavourite = 0;
   int isCompleted = 0;
   String reminderTune = "";
+  String eventId = "";
 
   ToDo({this.title, this.description, this.date, this.category, this.isReminderOn, this.reminderTune});
 
@@ -136,7 +138,8 @@ class ToDo {
       colReminder: isReminderOn,
       colFavourite: isFavourite,
       colCompleted: isCompleted,
-      colReminderTune: reminderTune
+      colReminderTune: reminderTune,
+      colEventId: eventId
     };
     return map;
   }
@@ -151,5 +154,6 @@ class ToDo {
     isFavourite = map[colFavourite];
     isCompleted = map[colCompleted];
     reminderTune = map[colReminderTune];
+    eventId = map[colEventId];
   }
 }

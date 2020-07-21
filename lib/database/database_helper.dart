@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertododemo/database/calendar_helper.dart';
 import 'package:fluttertododemo/database/reminder_manager.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -62,6 +63,7 @@ class DatabaseHelper {
         '$colFavourite INTEGER, '
         '$colCompleted INTEGER, '
         '$colReminderTune TEXT, '
+        '$colEventId TEXT, '
         'FOREIGN KEY ($categoryColId) REFERENCES $categoryTable($categoryColId))'
     );
 
@@ -138,7 +140,7 @@ class DatabaseHelper {
       allUpcomingToDo.add(todo);
     });
     var notifications = await manager.getPendingReminders();
-    notifications.forEach((reminder) {
+    notifications.forEach((reminder) async {
       var todo = allUpcomingToDo.firstWhere((todo) {
         return todo.id == reminder.id;
       });
@@ -210,6 +212,25 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<String> fetchFileNamed(String name) async {
+
+    Directory dir = Directory('/storage/emulated/0/');
+    String givenMP3 = "";
+    String mp3Path = dir.toString();
+    print('$mp3Path  name: $name');
+    List<FileSystemEntity> _files;
+    _files = dir.listSync(recursive: true, followLinks: false);
+    for(FileSystemEntity entity in _files) {
+      String path = entity.path;
+      if(path.endsWith(name)) {
+        givenMP3 = path;
+        debugPrint("GIVEN MP3 == $givenMP3");
+        return givenMP3;
+      }
+    }
+    return givenMP3;
+  }
+
   // Get list of To-Do items
   Future<List<Map<String, dynamic>>> fetchToDoList() async {
     Database db = await this.database;
@@ -223,7 +244,19 @@ class DatabaseHelper {
     Database db = await this.database;
     var result = await db.rawDelete('DELETE FROM $tableName WHERE $colId == ${toDo.id}');
     manager.removeReminder(toDo.id);
+    deleteCalendarEvent(toDo);
     return result;
+  }
+
+  deleteCalendarEvent(ToDo toDo) {
+    CalendarHelper helper = CalendarHelper();
+    helper.deleteFromCalendar(toDo);
+  }
+
+  addEventIdOnToDo(ToDo toDo, String id) async {
+    Database db = await this.database;
+    var result = await db.rawQuery('UPDATE $tableName SET $colEventId = "$id" WHERE $colId == ${toDo.id}');
+    debugPrint("add event id result $id todo ${toDo.id} == $result}");
   }
 
   // Mark To-Do item as favourite
@@ -273,13 +306,6 @@ class DatabaseHelper {
       debugPrint(error);
     }
 
-  }
-
-  // Update reminder tune
-  Future updateReminderTune(ToDo toDo) async {
-    Database db = await this.database;
-    var result = await db.rawQuery('UPDATE $tableName SET $colReminderTune = "${toDo.reminderTune}" WHERE $colId == ${toDo.id}');
-    return result;
   }
 
     // Get this month to-do

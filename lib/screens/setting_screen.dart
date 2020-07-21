@@ -483,44 +483,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(25)),
-                  gradient: LinearGradient(
-                      colors: [Colors.black12, Colors.cyan],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.bottomRight
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(obj.getTranslatedValue("tune_setting"), style: Theme.of(context).textTheme.bodyText1, maxLines: 2,
-                            overflow: TextOverflow.ellipsis,),
-                          const SizedBox(height: 5,),
-                          Text(obj.getTranslatedValue("reminder_tune"), style: Theme.of(context).textTheme.bodyText1, maxLines: 2,
-                            overflow: TextOverflow.ellipsis,),
-                          const SizedBox(height: 5,),
-                          Text(obj.getTranslatedValue("tune_suggestion_text"),
-                            style: Theme.of(context).textTheme.bodyText2,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5,),
-                        ],
-                      ),
-                    ),
-                    Icon(Icons.keyboard_arrow_down)
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(25)),
                   gradient: LinearGradient(
                       colors: [Colors.greenAccent, Colors.black12],

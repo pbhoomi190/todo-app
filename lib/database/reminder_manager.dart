@@ -44,7 +44,7 @@ class ReminderManager {
 
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker', sound: RawResourceAndroidNotificationSound('custom'));
+        importance: Importance.Max, priority: Priority.High, ticker: 'ticker',);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
