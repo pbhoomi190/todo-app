@@ -15,3 +15,4 @@ Features:
 - Add your own category from the settings
 - Local notifications on specified time (15, 30, 45, 60 minutes before the actual time)
 - Swipe to delete and edit options
+- Sync added events in the device's calendar
